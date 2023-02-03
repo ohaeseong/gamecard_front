@@ -1,11 +1,12 @@
+import LoginContainer from "@/containers/LoginContainer";
 import ContentsLayout from "@/layouts/ContentsLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
-export default function HomePage() {
+export default function LoginPage() {
   return (
     <DefaultLayout>
       <ContentsLayout>
-        <h1 className="text-3xl font-bold underline">Hello world!</h1>
+        <LoginContainer />
       </ContentsLayout>
     </DefaultLayout>
   );

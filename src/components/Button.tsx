@@ -3,17 +3,29 @@ import classNames from "classnames";
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
   theme?: "primary" | "clear";
+  disable?: boolean;
+  children: React.ReactNode;
   onClick: () => void;
 };
 
-const Button: React.FC<Props> = ({ className, theme = "primary", onClick }) => {
+const Button: React.FC<Props> = ({
+  className,
+  theme = "primary",
+  disable = false,
+  children,
+  onClick,
+}) => {
   return (
     <button
-      className={classNames("outline-none", className, {
-        "": theme === "primary",
+      className={classNames("outline-none w-full h-10 text-white", className, {
+        border: theme === "primary",
+        "bg-slate-400": disable,
+        "bg-indigo-500": !disable,
       })}
       onClick={onClick}
-    />
+    >
+      {children}
+    </button>
   );
 };
 

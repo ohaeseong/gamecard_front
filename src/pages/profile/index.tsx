@@ -1,12 +1,28 @@
+import { getGameList } from "@/apis/profile";
+import ProfileContainer from "@/containers/ProfileContainer";
 import ContentsLayout from "@/layouts/ContentsLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import { GameItem } from "@/types/Game";
 
-export default function Profile() {
+type Props = {
+  games: Array<GameItem>;
+};
+const ProfilePage = ({ games }: Props) => {
   return (
     <DefaultLayout>
       <ContentsLayout>
-        <h1 className="text-3xl font-bold underline">Hello profile!</h1>
+        <ProfileContainer games={games} />
       </ContentsLayout>
     </DefaultLayout>
   );
-}
+};
+
+export default ProfilePage;
+
+ProfilePage.getInitialProps = async ({}) => {
+  const games = await getGameList();
+
+  return {
+    games,
+  };
+};
