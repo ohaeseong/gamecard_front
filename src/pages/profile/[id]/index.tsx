@@ -55,7 +55,6 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
       notFound: true,
     };
   }
-  console.log(userProfile);
 
   return {
     gameTypes: games,

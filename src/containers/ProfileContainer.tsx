@@ -260,8 +260,6 @@ const ProfileContainer: React.FC<Props> = ({
         tmiIndex: tmiUpdateIndex,
       });
 
-      console.log(response);
-
       setTmis((tmis) => {
         tmis[tmiUpdateIndex] = response.tmi[0];
 
@@ -289,6 +287,7 @@ const ProfileContainer: React.FC<Props> = ({
       gameUser: essential,
       authToken: token,
     });
+    console.log(response);
 
     toggleModal();
   }

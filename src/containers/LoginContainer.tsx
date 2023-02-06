@@ -64,7 +64,7 @@ const LoginContainer: React.FC = ({}) => {
         )}
       </div>
 
-      <div className="w-full flex justify-between mt-2">
+      <div className="w-full flex justify-between mt-3">
         <span
           className="text-xs text-slate-400 cursor-pointer"
           onClick={() => router.push("/")}
