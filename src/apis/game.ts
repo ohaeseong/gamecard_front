@@ -1,20 +1,11 @@
 import { SERVER_URL } from ".";
 
-interface IAccountInput {
-  id: string;
-  pw: string;
-}
-
-export function createAccount({ id, pw }: IAccountInput) {
-  const response = fetch(`${SERVER_URL}/dev/account`, {
-    method: "POST",
+export function getGameList() {
+  const response = fetch(`${SERVER_URL}/dev/games`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      id,
-      pw,
-    }),
   })
     .then((response) => response.json())
     .catch((error) => console.log("error:", error));
@@ -22,15 +13,21 @@ export function createAccount({ id, pw }: IAccountInput) {
   return response;
 }
 
-export async function login({ id, pw }: IAccountInput) {
-  const response = await fetch(`${SERVER_URL}/dev/login`, {
-    method: "POST",
+interface IGameInput {
+  id: string;
+  gameName: string;
+  gameUser: string;
+  authToken: string;
+}
+
+export function requestAddGame(variables: IGameInput) {
+  const response = fetch(`${SERVER_URL}/dev/game`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      id,
-      pw,
+      ...variables,
     }),
   })
     .then((response) => response.json())

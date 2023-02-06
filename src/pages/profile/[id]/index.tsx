@@ -1,4 +1,6 @@
-import { getGameList, getProfileById, getTMIList } from "@/apis/profile";
+import { getGameList } from "@/apis/game";
+import { getProfileById } from "@/apis/profile";
+import { getTMIList } from "@/apis/tmi";
 import ProfileContainer from "@/containers/ProfileContainer";
 import ContentsLayout from "@/layouts/ContentsLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -8,20 +10,28 @@ import { getCookieFromContext } from "@/utils/cookie";
 import { NextPageContext } from "next";
 
 type Props = {
-  games: Array<CategoryItem>;
-  tmis: Array<CategoryItem>;
+  gameTypes: Array<CategoryItem>;
+  tmiTypes: Array<CategoryItem>;
   userProfile: IProfile;
   userId?: string;
+  token?: string;
 };
-const ProfilePage = ({ games, tmis, userProfile, userId }: Props) => {
+const ProfilePage = ({
+  gameTypes,
+  tmiTypes,
+  userProfile,
+  userId,
+  token,
+}: Props) => {
   return (
     <DefaultLayout>
       <ContentsLayout>
         <ProfileContainer
-          games={games}
-          tmis={tmis}
+          gameTypes={gameTypes}
+          tmiTypes={tmiTypes}
           profile={userProfile}
           userId={userId}
+          token={token}
         />
       </ContentsLayout>
     </DefaultLayout>
@@ -34,9 +44,10 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
   const games = await getGameList();
   const tmis = await getTMIList();
   const userId = getCookieFromContext(ctx, "userId", "");
+  const token = getCookieFromContext(ctx, "authToken", "");
 
   const userProfile: IProfile = await getProfileById({
-    id: ctx.query.id,
+    id: typeof ctx.query.id === "string" ? ctx.query.id : "",
   });
 
   if (userProfile?.Err === "NotExistUser") {
@@ -44,11 +55,13 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
       notFound: true,
     };
   }
+  console.log(userProfile);
 
   return {
-    games,
-    tmis,
+    gameTypes: games,
+    tmiTypes: tmis,
     userProfile,
     userId,
+    token,
   };
 };

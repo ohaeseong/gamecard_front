@@ -46,15 +46,15 @@ const Item: React.FC<ItemProps> = ({ className, game, selected, onClick }) => {
   return (
     <div
       className={classNames(
-        "w-52 min-h-[12rem] border transition-colors rounded overflow-hidden cursor-pointer",
+        "w-52 min-h-[12rem] border-2 transition-colors rounded overflow-hidden cursor-pointer",
         className,
         {
-          "border-indigo-300": selected,
+          "border-indigo-400": selected,
         }
       )}
       onClick={() => onClick(game.name)}
     >
-      <div className="w-full h-24">
+      <div className="w-full h-24 border-b">
         <img
           className="w-full h-full object-cover"
           src={game.titleUrl}
@@ -63,7 +63,7 @@ const Item: React.FC<ItemProps> = ({ className, game, selected, onClick }) => {
       </div>
 
       <div className="mt-2 px-1 flex flex-row justify-between">
-        <span>{game.name}</span>
+        <span className="capitalize">{game.name}</span>
 
         <img
           className="w-6 h-6 object-cover"

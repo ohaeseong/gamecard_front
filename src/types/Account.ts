@@ -1,3 +1,6 @@
+import { IGame } from "./Game";
+import { ITmi } from "./Tmi";
+
 export interface IResponseLogin {
   tft: {};
   lostark: {};
@@ -15,17 +18,9 @@ export interface IResponseLogin {
 }
 
 export interface IProfile {
-  games?: {
-    lol?: {};
-    maple?: {};
-    valorant?: {};
-    wildrift?: {};
-    tft?: {};
-    fifa4?: {};
-    dnf?: {};
-    lostark?: {};
-  };
-  tmi: [];
+  games: IGame;
+  tmi: ITmi[];
   id: string;
+  friendCount: number;
   Err?: string;
 }

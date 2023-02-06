@@ -27,16 +27,27 @@ const LoginContainer: React.FC = ({}) => {
       {!regist ? (
         <div className="space-y-3">
           <Input placeholder="ID" onChange={handleId} value={id} />
-          <Input placeholder="PW" onChange={handlePw} value={pw} />
+          <Input
+            placeholder="PW"
+            onChange={handlePw}
+            value={pw}
+            type="password"
+          />
         </div>
       ) : (
         <div className="space-y-3">
           <Input placeholder="ID" onChange={handleId} value={id} />
-          <Input placeholder="PW" onChange={handlePw} value={pw} />
+          <Input
+            placeholder="PW"
+            onChange={handlePw}
+            value={pw}
+            type="password"
+          />
           <Input
             placeholder="Confirm PW"
             onChange={handleComfirmPw}
             value={comfirmPw}
+            type="password"
           />
         </div>
       )}
@@ -98,7 +109,6 @@ const LoginContainer: React.FC = ({}) => {
       return;
     }
     const { authToken } = response;
-
     setCookie("authToken", authToken);
     setCookie("userId", id);
 
@@ -126,6 +136,7 @@ const LoginContainer: React.FC = ({}) => {
     const { authToken } = response;
 
     setCookie("authToken", authToken);
+    setCookie("userId", id);
 
     router.push("/");
   }

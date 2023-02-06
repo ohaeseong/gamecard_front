@@ -4,6 +4,7 @@ type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: "password" | "button";
   value?: string;
 };
 
@@ -12,6 +13,7 @@ const Input: React.FC<Props> = ({
   placeholder,
   onChange,
   value,
+  type,
 }) => {
   return (
     <div className="flex flex-row justify-around w-full">
@@ -20,6 +22,7 @@ const Input: React.FC<Props> = ({
         onChange={onChange}
         placeholder={placeholder}
         value={value}
+        type={type}
       />
     </div>
   );
