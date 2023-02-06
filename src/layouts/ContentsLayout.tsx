@@ -10,11 +10,10 @@ const ContentsLayout: React.FC<Props> = ({ children }) => {
   return (
     <div
       className={classNames(
-        "flex flex-col lg:w-content w-full justify-center items-center"
-        // {
-        //   "h-full": router.pathname === "/login",
-        //   "h-[calc(100vh-56px)] overflow-auto": router.pathname !== "/login",
-        // }
+        "flex flex-col lg:w-content w-full justify-center items-center",
+        {
+          "h-full": router.pathname === "/login",
+        }
       )}
     >
       {children}

@@ -13,3 +13,19 @@ export interface IResponseLogin {
   id: string;
   Err?: string;
 }
+
+export interface IProfile {
+  games?: {
+    lol?: {};
+    maple?: {};
+    valorant?: {};
+    wildrift?: {};
+    tft?: {};
+    fifa4?: {};
+    dnf?: {};
+    lostark?: {};
+  };
+  tmi: [];
+  id: string;
+  Err?: string;
+}

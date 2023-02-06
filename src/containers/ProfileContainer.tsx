@@ -1,25 +1,36 @@
 import Button from "@/components/Button";
 import React from "react";
-import GameCard from "@/components/GameCard";
 import List from "@/components/List";
 import { BsArrowRightShort } from "react-icons/bs";
-import TitleGameBox from "@/components/GameSelector";
-import { GameItem } from "@/types/Game";
 import Modal from "@/components/Modal";
-import GameSelector from "@/components/GameSelector";
+import { CategoryItem } from "@/types/Category";
+import CategorySelector from "@/components/CategorySelector";
+import { IProfile } from "@/types/Account";
+import ProfileCard from "@/components/ProfileCard";
+import classNames from "classnames";
 
 type Props = {
-  games: Array<GameItem>;
+  games: Array<CategoryItem>;
+  tmis: Array<CategoryItem>;
+  profile: IProfile;
+  userId?: string;
 };
 
-const ProfileContainer: React.FC<Props> = ({ games }) => {
-  const [openTitleBox, setOpenTitleBox] = React.useState(false);
+const ProfileContainer: React.FC<Props> = ({
+  games,
+  tmis,
+  profile,
+  userId,
+}) => {
+  const [openGameBox, setOpenGameBox] = React.useState(false);
+  const [openTmiBox, setOpenTmiBox] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
   const [selectedGame, setSelectedGame] = React.useState("");
 
   return (
     <div className="w-full h-full p-4 flex flex-col">
       <div className="space-x-4">
-        <GameCard />
+        <ProfileCard profile={profile} />
         <div></div>
       </div>
 
@@ -29,7 +40,7 @@ const ProfileContainer: React.FC<Props> = ({ games }) => {
         <span className="text-indigo-500 cursor-pointer">Copy URL</span>
       </div>
 
-      <div className="space-y-4 mt-4">
+      <div className="space-y-4 mt-6">
         <div>
           <List
             title="Games"
@@ -44,7 +55,12 @@ const ProfileContainer: React.FC<Props> = ({ games }) => {
               },
             ]}
           />
-          <Button className="mt-2" onClick={addGame}>
+          <Button
+            className={classNames("mt-2", {
+              hidden: profile.id !== userId,
+            })}
+            onClick={onClickGameButton}
+          >
             Game 추가하기!
           </Button>
         </div>
@@ -62,13 +78,28 @@ const ProfileContainer: React.FC<Props> = ({ games }) => {
               },
             ]}
           />
-          <Button className="my-2" onClick={openModal}>
+          <Button
+            className={classNames("mt-2", {
+              hidden: profile.id !== userId,
+            })}
+            onClick={onClickTmiButton}
+          >
             T.M.I 추가하기!
           </Button>
 
-          <Modal title="Games" isOpen={openTitleBox} closeModal={closeModal}>
-            <GameSelector
-              games={games}
+          <Modal
+            title={
+              openGameBox && !openTmiBox
+                ? "Games"
+                : openTmiBox && !openGameBox
+                ? "Tmis"
+                : ""
+            }
+            isOpen={openModal}
+            closeModal={toggleModal}
+          >
+            <CategorySelector
+              categories={openGameBox ? games : tmis}
               selected={selectedGame}
               onClick={handleSelectedGame}
             />
@@ -86,17 +117,23 @@ const ProfileContainer: React.FC<Props> = ({ games }) => {
 
   function addTMI() {}
 
-  function closeModal() {
-    setOpenTitleBox(false);
+  function onClickGameButton() {
+    setOpenTmiBox(false);
+    setOpenGameBox(true);
+    toggleModal();
   }
 
-  function openModal() {
-    setOpenTitleBox(true);
+  function onClickTmiButton() {
+    setOpenTmiBox(true);
+    setOpenGameBox(false);
+    toggleModal();
+  }
+
+  function toggleModal() {
+    setOpenModal(!openModal);
   }
 
   function handleSelectedGame(game: string) {
-    console.log(game);
-
     setSelectedGame(game);
   }
 };

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import Link from "next/link";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
 type Props = {
@@ -35,6 +35,7 @@ const menus: Array<IMenu> = [
 
 const Navigation: React.FC<Props> = ({ className }) => {
   const router = useRouter();
+  const userId = Cookies.get("userId");
   return (
     <div
       className={classNames(
@@ -52,9 +53,9 @@ const Navigation: React.FC<Props> = ({ className }) => {
             className="h-full w-full capitalize flex items-center justify-center text-xs md:text-base"
           >
             {label !== "card" && href ? (
-              <Link href={href} onClick={checkAuthToken}>
-                <span>{label}</span>
-              </Link>
+              <span className="cursor-pointer" onClick={goToHref(href)}>
+                {label}
+              </span>
             ) : (
               <div className="md:w-44 w-full h-full border-4 border-indigo-300 rounded-2xl flex items-center justify-center cursor-pointer">
                 {label}
@@ -66,8 +67,22 @@ const Navigation: React.FC<Props> = ({ className }) => {
     </div>
   );
 
-  function checkAuthToken() {
-    return;
+  function goToHref(href: string) {
+    if (href === "/profile" && !userId) {
+      return () => {
+        window.alert("로그인 후 이용해 주세요!");
+      };
+    }
+
+    if (href === "/profile") {
+      return () => {
+        router.push(`${href}/${userId}`);
+      };
+    }
+
+    return () => {
+      router.push(href);
+    };
   }
 };
 

@@ -1,29 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
-import { GameItem } from "@/types/Game";
-import { Transition, Dialog } from "@headlessui/react";
+import { CategoryItem } from "@/types/Category";
 import classNames from "classnames";
 import React, { Fragment } from "react";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
-  games: Array<GameItem>;
+  categories: Array<CategoryItem>;
   selected: string;
   onClick: (game: string) => void;
 };
 
-const GameSelector: React.FC<Props> = ({
+const CategorySelector: React.FC<Props> = ({
   className,
-  games,
+  categories,
   selected,
   onClick,
 }) => {
   return (
-    <div className={classNames("flex flex-row justify-around", className)}>
-      {games.map((game) => (
-        <GameItem
-          key={game.name}
-          game={game}
-          selected={selected === game.name}
+    <div
+      className={classNames(
+        "flex flex-row justify-around space-x-4",
+        className
+      )}
+    >
+      {categories.map((categorie) => (
+        <Item
+          key={categorie.name}
+          game={categorie}
+          selected={selected === categorie.name}
           onClick={onClick}
         />
       ))}
@@ -31,23 +35,18 @@ const GameSelector: React.FC<Props> = ({
   );
 };
 
-type GameItemProps = {
+type ItemProps = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
-  game: GameItem;
+  game: CategoryItem;
   selected?: boolean;
   onClick: (game: string) => void;
 };
 
-const GameItem: React.FC<GameItemProps> = ({
-  className,
-  game,
-  selected,
-  onClick,
-}) => {
+const Item: React.FC<ItemProps> = ({ className, game, selected, onClick }) => {
   return (
     <div
       className={classNames(
-        "w-44 min-h-[10rem] border transition-colors rounded overflow-hidden cursor-pointer",
+        "w-52 min-h-[12rem] border transition-colors rounded overflow-hidden cursor-pointer",
         className,
         {
           "border-indigo-300": selected,
@@ -68,7 +67,7 @@ const GameItem: React.FC<GameItemProps> = ({
 
         <img
           className="w-6 h-6 object-cover"
-          src={game.logoURl}
+          src={game.logoUrl}
           alt={game.name}
         />
       </div>
@@ -76,4 +75,4 @@ const GameItem: React.FC<GameItemProps> = ({
   );
 };
 
-export default GameSelector;
+export default CategorySelector;

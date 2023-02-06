@@ -100,6 +100,7 @@ const LoginContainer: React.FC = ({}) => {
     const { authToken } = response;
 
     setCookie("authToken", authToken);
+    setCookie("userId", id);
 
     router.push("/");
   }
