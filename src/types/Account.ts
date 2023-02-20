@@ -1,10 +1,10 @@
-import { IGame } from "./Game";
+import { IGames } from "./Game";
 import { ITmi } from "./Tmi";
 
 export interface IResponseLogin {
   tft: {};
   lostark: {};
-  pw: "1234";
+  pw: string;
   lol: {};
   valorant: {};
   authToken: string;
@@ -18,7 +18,7 @@ export interface IResponseLogin {
 }
 
 export interface IProfile {
-  games: IGame;
+  games: IGames;
   tmi: ITmi[];
   id: string;
   friendCount: number;

@@ -1,4 +1,4 @@
-export interface IGame {
+export interface IGames {
   [key: string]: object;
   lol: ILol;
   maple: IMapleStory;
@@ -30,6 +30,7 @@ export interface IMapleStory {
   updateTime: number;
   verified: boolean;
   gameName: ServicedGames;
+  gallery: Array<string>;
 }
 
 export enum ServicedGames {

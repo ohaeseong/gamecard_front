@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { ImFilePicture } from "react-icons/im";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
@@ -8,29 +9,31 @@ type Props = {
 
 interface IMenu {
   label: string;
+  icon: string;
   href?: string;
 }
 
 const menus: Array<IMenu> = [
   {
-    label: "home",
+    label: "Picture Store",
+    icon: "picture",
     href: "/",
   },
-  {
-    label: "profile",
-    href: "/profile",
-  },
-  {
-    label: "card",
-  },
-  {
-    label: "cummunity",
-    href: "/cummunity",
-  },
-  {
-    label: "settings",
-    href: "/settings",
-  },
+  // {
+  //   label: "profile",
+  //   href: "/profile",
+  // },
+  // {
+  //   label: "card",
+  // },
+  // {
+  //   label: "cummunity",
+  //   href: "/cummunity",
+  // },
+  // {
+  //   label: "settings",
+  //   href: "/settings",
+  // },
 ];
 
 const Navigation: React.FC<Props> = ({ className }) => {
@@ -38,29 +41,22 @@ const Navigation: React.FC<Props> = ({ className }) => {
   const userId = Cookies.get("userId");
   return (
     <div
-      className={classNames(
-        "h-14 w-full bg-indigo-500 fixed bottom-0",
-        className,
-        {
-          hidden: router.pathname === "/login",
-        }
-      )}
+      className={classNames("h-full", className, {
+        hidden: router.pathname === "/login",
+      })}
     >
-      <ul className="flex flex-row justify-around text-gray-100 items-center h-full">
-        {menus.map(({ label, href }) => (
+      <ul className="flex flex-col items-center h-full w-64 space-y-2">
+        {menus.map(({ label, icon, href }) => (
           <li
             key={label}
-            className="h-full w-full capitalize flex items-center justify-center text-xs md:text-base"
+            className="font-bold space-x-2 w-full capitalize flex items-center justify-center"
           >
-            {label !== "card" && href ? (
-              <span className="cursor-pointer" onClick={goToHref(href)}>
-                {label}
-              </span>
-            ) : (
-              <div className="md:w-44 w-full h-full border-4 border-indigo-300 rounded-2xl flex items-center justify-center cursor-pointer">
-                {label}
-              </div>
+            {icon === "picture" && (
+              <ImFilePicture className="h-5 w-5" color="gray" />
             )}
+            <div className="border-b w-fit cursor-pointer text-indigo-600 text-xs md:text-base">
+              {label}
+            </div>
           </li>
         ))}
       </ul>

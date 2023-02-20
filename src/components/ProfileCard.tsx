@@ -1,44 +1,37 @@
-import { IProfile } from "@/types/Account";
-import { ILol } from "@/types/Game";
-import { getGameAbilityFromProfile } from "@/utils/game";
+import React from "react";
 import classNames from "classnames";
 import { IListItem } from "./List";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
-  profile: IProfile;
+  // profile: IProfile;
+  games: Array<IListItem>;
 };
 
-const ProfileCard: React.FC<Props> = ({ className, profile }) => {
-  const games = getGameAbilityFromProfile<IListItem>(profile.games);
+const ProfileCard: React.FC<Props> = ({ className, games }) => {
+  const maple = games.filter((game) => game.gameName === "maplestory")[0];
+  const [seletedGame, setSeletedGame] = React.useState(games[0]);
+
   return (
-    <div className="md:w-[27rem] w-full h-52 p-3 flex-col bg-slate-50 border shadow-md rounded flex">
-      <div className="h-10 w-full flex items-center font-semibold">
-        <div className="w-6 h-6 mr-2 flex justify-center items-center border font-bold bg-indigo-500 text-white rounded">
-          {profile.id[0].toUpperCase()}
+    <div className="flex flex-row items-center">
+      <div
+        className={classNames(
+          "w-full lg:min-h-[320px] min-h-[200px] rounded-xl bg-no-repeat bg-center flex flex-col justify-end p-3",
+          className
+        )}
+        style={{
+          backgroundImage: `url(/images/cover/maple_cover.jpg)`,
+        }}
+      >
+        <div className="w-fit bg-slate-600 rounded py-1 px-3 text-white flex items-center space-x-1">
+          <span className="text-lg font-semibold"># {maple?.name}</span>
+          <span className="text-base"> - Lv {maple?.level}</span>
         </div>
-        {profile.id}
       </div>
-      <div className="h-24 w-full flex flex-row items-center justify-around">
-        {games.map((game: IListItem) => (
-          <div
-            key={game.name}
-            className="flex flex-col items-center space-y-0.5"
-          >
-            <img className="h-10 w-10 rounded" src={game.imageUrl} alt="game" />
-            <div>
-              <span className="text-sm">
-                {game.name} {game?.job && `[${game?.job}]`}
-              </span>
-            </div>
-            <span className="text-sm font-semibold">
-              {game.tier || game.world}-[{game.level}v]
-            </span>
-          </div>
+      <div className="w-20 h-[90%] border rounded-r-xl bg-slate-500 flex flex-col">
+        {games.map((game) => (
+          <div key={game.gameName}></div>
         ))}
-      </div>
-      <div className="h-10 w-full flex items-center justify-end text-slate-400">
-        Followers: {profile.friendCount}
       </div>
     </div>
   );

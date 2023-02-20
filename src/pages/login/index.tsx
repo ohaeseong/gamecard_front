@@ -4,10 +4,8 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 
 export default function LoginPage() {
   return (
-    <DefaultLayout>
-      <ContentsLayout>
-        <LoginContainer />
-      </ContentsLayout>
-    </DefaultLayout>
+    <div className="h-screen w-full flex items-center justify-center">
+      <LoginContainer />
+    </div>
   );
 }

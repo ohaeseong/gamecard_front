@@ -1,4 +1,5 @@
 import { Transition, Dialog } from "@headlessui/react";
+import classNames from "classnames";
 import React, { Fragment } from "react";
 
 type Props = {
@@ -45,11 +46,11 @@ const Modal: React.FC<Props> = ({
               <Dialog.Panel className="w-full max-w-[1080px] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-semibold leading-6 text-gray-900 mb-2"
+                  className="text-lg font-semibold leading-6 text-indigo-600 mb-2"
                 >
                   {title}
                 </Dialog.Title>
-                <div className="py-2">{children}</div>
+                <div className={classNames("py-2", className)}>{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

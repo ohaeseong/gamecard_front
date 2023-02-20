@@ -19,7 +19,7 @@ const LoginContainer: React.FC = ({}) => {
   return (
     <div
       className={classNames(
-        "p-20 rounded bg-white flex flex-col items-center justify-center shadow-lg"
+        "p-20 rounded w-fit h-fit bg-white flex flex-col items-center justify-center shadow-lg"
       )}
     >
       <h1 className="mb-8 font-bold text-lg">GAMECARD</h1>
