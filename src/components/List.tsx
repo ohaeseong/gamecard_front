@@ -1,5 +1,4 @@
 import { ILol, IMapleStory, ServicedGames } from "@/types/Game";
-import { ITmi } from "@/types/Tmi";
 import classNames from "classnames";
 import ListItem from "./ListItem";
 

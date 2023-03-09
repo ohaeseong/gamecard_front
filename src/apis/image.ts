@@ -46,3 +46,53 @@ export function removeImage(variables: IImageDelete) {
 
   return response;
 }
+
+const AI_IMAGE_SERVER_URL =
+  "https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com";
+
+export interface IAiImageInput {
+  gameUser: string;
+  gender: string;
+  hairColor: string;
+  eyeColor: string;
+  cloth: string;
+}
+
+export function createAiImage({
+  gameUser,
+  gender,
+  hairColor,
+  eyeColor,
+  cloth,
+}: IAiImageInput) {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/dev/nyai/promote`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      gameUser,
+      gender,
+      hairColor,
+      eyeColor,
+      cloth,
+    }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}
+
+export function getLimit() {
+  const response = fetch(`${SERVER_URL}/dev/limit/promote`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}

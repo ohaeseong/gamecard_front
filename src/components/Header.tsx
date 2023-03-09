@@ -22,10 +22,11 @@ const Header: React.FC<Props> = ({ className, profile }) => {
   return (
     <div
       className={classNames(
-        "h-14 border-b w-full flex flex-row px-4 items-center justify-end",
+        "min-h-[56px] border-b w-full flex flex-row px-4 items-center justify-between",
         className
       )}
     >
+      <h1 className="text-lg font-bold text-indigo-600">Game-Card</h1>
       {userId && profile ? (
         <Profile profile={profile} />
       ) : (

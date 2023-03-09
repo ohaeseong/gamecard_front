@@ -22,21 +22,29 @@ const ProfilePage = ({ userProfile, userId, authToken }: Props) => {
 export default ProfilePage;
 
 ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
-  const userId = getCookieFromContext(ctx, "userId", "");
+  const userId = ctx.query.id;
   const token = getCookieFromContext(ctx, "authToken", "");
 
-  const userProfile: IProfile = await getProfileById({
-    id: typeof ctx.query.id === "string" ? ctx.query.id : "",
-  });
+  if (userId) {
+    const userProfile: IProfile = await getProfileById({
+      id: typeof ctx.query.id === "string" ? ctx.query.id : "",
+    });
 
-  if (userProfile?.Err === "NotExistUser") {
+    if (userProfile?.Err === "NotExistUser" && ctx.res) {
+      ctx.res.statusCode = 404;
+      ctx.res.end("Not found");
+      return;
+    }
+
     return {
-      notFound: true,
+      userProfile,
+      userId,
+      authToken: token,
     };
   }
 
   return {
-    userProfile,
+    userProfile: {},
     userId,
     authToken: token,
   };

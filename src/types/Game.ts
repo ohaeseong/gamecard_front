@@ -33,7 +33,30 @@ export interface IMapleStory {
   gallery: Array<string>;
 }
 
+export interface ILostArk {
+  gameName: string;
+  imageUrl: string;
+  itemLevel: number;
+  job: string;
+  level: string;
+  name: string;
+  updateTime: number;
+  verified: boolean;
+  world: string;
+  gallery: Array<string>;
+}
+
+export interface IMapleInfoResponse {
+  imageUrl: string;
+  job: string;
+  name: string;
+  state: string;
+  world: string;
+  Err?: string;
+}
+
 export enum ServicedGames {
-  LOL = "lol",
+  // LOL = "lol",
   MapleStory = "maplestory",
+  LostArk = "lostark",
 }

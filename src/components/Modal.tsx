@@ -1,6 +1,7 @@
 import { Transition, Dialog } from "@headlessui/react";
 import classNames from "classnames";
 import React, { Fragment } from "react";
+import { RxCross2 } from "react-icons/rx";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
@@ -19,7 +20,7 @@ const Modal: React.FC<Props> = ({
 }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Dialog as="div" className="relative z-10" onClose={() => {}}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -43,14 +44,25 @@ const Modal: React.FC<Props> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-[1080px] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel
+                className={classNames(
+                  "transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all",
+                  className
+                )}
+              >
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-semibold leading-6 text-indigo-600 mb-2"
                 >
-                  {title}
+                  <div className="flex-1 flex justify-between">
+                    <span>{title}</span>
+                    <RxCross2
+                      className="w-6 h-6 cursor-pointer"
+                      onClick={closeModal}
+                    />
+                  </div>
                 </Dialog.Title>
-                <div className={classNames("py-2", className)}>{children}</div>
+                <div>{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

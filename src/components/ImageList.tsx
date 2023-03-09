@@ -30,14 +30,25 @@ const ImageList: React.FC<Props> = ({
         className
       )}
     >
-      {images.map((image) => (
-        <img
-          className="w-40 h-52 object-contain border rounded cursor-pointer"
-          key={image}
-          src={image}
-          alt={"profile_ai_image"}
-          onClick={handleImage(image)}
-        />
+      {images.map((image, index) => (
+        <>
+          {!image ? (
+            <div
+              key={index}
+              className="w-40 h-52 border rounded flex justify-center items-center"
+            >
+              <AiOutlinePlus />
+            </div>
+          ) : (
+            <img
+              className="w-40 h-52 object-contain border rounded cursor-pointer"
+              key={image}
+              src={image}
+              alt={"profile_ai_image"}
+              onClick={handleImage(image)}
+            />
+          )}
+        </>
       ))}
       {typeof uploadImage === "function" && (
         <label
@@ -55,21 +66,16 @@ const ImageList: React.FC<Props> = ({
           />
         </label>
       )}
-      <Modal
-        className="flex items-center justify-center flex-col"
-        title="Gallery"
-        isOpen={modal}
-        closeModal={toggleModal}
-      >
+      <Modal title="Gallery" isOpen={modal} closeModal={toggleModal}>
         <img
           className="w-60 h-full object-contain border rounded cursor-pointer"
           src={selectedImage}
-          alt={"profile_ai_image"}
+          alt={"image"}
         />
         {typeof _deleteImage === "function" && (
           <Button
             className="w-20 h-10 mt-4 rounded"
-            onClick={deleteImage(images.indexOf(selectedImage) - 1)}
+            onClick={deleteImage(images.indexOf(selectedImage))}
           >
             삭제
           </Button>

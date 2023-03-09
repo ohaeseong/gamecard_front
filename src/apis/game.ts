@@ -35,3 +35,19 @@ export function requestAddGame(variables: IGameInput) {
 
   return response;
 }
+
+export function getMapleInfo({ name }: { name: string }) {
+  const response = fetch(`${SERVER_URL}/dev/maple/promote`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      gameUser: name,
+    }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}

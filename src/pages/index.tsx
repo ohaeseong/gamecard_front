@@ -1,62 +1,59 @@
 import { getProfileById } from "@/apis/profile";
-import ImageList from "@/components/ImageList";
-import { IListItem } from "@/components/List";
-import ProfileCard from "@/components/ProfileCard";
-import ContentsLayout from "@/layouts/ContentsLayout";
-import DefaultLayout from "@/layouts/DefaultLayout";
+import Header from "@/components/Header";
 import { IProfile } from "@/types/Account";
 import { getCookieFromContext } from "@/utils/cookie";
-import { getGameAbilityFromProfile } from "@/utils/game";
 import { NextPageContext } from "next";
-import { useRouter } from "next/router";
 
 type Props = {
-  userProfile: IProfile;
+  profile?: IProfile;
 };
 
-export default function HomePage({ userProfile }: Props) {
-  // const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
-  // const maple = games.filter((game) => game.gameName === "maplestory")[0];
-  console.log(userProfile);
-
+export default function HomePage({ profile }: Props) {
   return (
-    // <DefaultLayout profile={userProfile}>
-    //   <ContentsLayout>
-    //     <ProfileCard games={games} />
-    //     <div className="w-full mt-8 text-xl font-bold text-indigo-600">
-    //       Gallery
-    //     </div>
-    //     <ImageList className="mt-4" images={maple.gallery} />
-    //   </ContentsLayout>
-    // </DefaultLayout>
-    <></>
+    <div className="flex flex-col h-screen">
+      <Header profile={profile} />
+      <div className="w-full h-full flex justify-center">
+        <div className="w-[1080px] h-full border p-4">
+          <div className="flex flex-row">
+            <div className="basis-3/4 h-[400px] border flex justify-center items-center">
+              <h1 className="text-3xl font-extrabold text-indigo-600">
+                Game Card
+              </h1>
+            </div>
+            <div className="basis-1/4 ml-2 h-[400px] border" />
+          </div>
+          <div className="mt-2 flex flex-row">
+            <div className="w-[200px] flex-1 border" />
+            <div className="border ml-2 flex-1 flex-col flex" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
 HomePage.getInitialProps = async (ctx: NextPageContext) => {
-  // const games = await getGameList();
-  // const tmis = await getTMIList();
   const userId = getCookieFromContext(ctx, "userId", "");
-  // const token = getCookieFromContext(ctx, "authToken", "");
+  const token = getCookieFromContext(ctx, "authToken", "");
 
-  if (!userId) {
+  if (userId && token) {
+    const userProfile: IProfile = await getProfileById({
+      id: userId,
+    });
+
+    if (userProfile?.Err === "NotExistUser" && ctx.res) {
+      ctx.res.statusCode = 404;
+      ctx.res.end("Not found");
+      return;
+    }
+
     return {
-      userProfile: null,
-    };
-  }
-
-  const userProfile: IProfile = await getProfileById({
-    id: typeof ctx.query.id === "string" ? ctx.query.id : "",
-  });
-  console.log(userProfile, ctx.query.id);
-
-  if (userProfile?.Err === "NotExistUser") {
-    return {
-      notFound: true,
+      profile: userProfile,
     };
   }
 
   return {
-    userProfile,
+    userProfile: {},
+    userId,
   };
 };

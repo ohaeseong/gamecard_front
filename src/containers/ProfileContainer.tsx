@@ -1,15 +1,47 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { addImage, IImageDelete, IImageInput, removeImage } from "@/apis/image";
-import { getProfileById } from "@/apis/profile";
+import {
+  addImage,
+  createAiImage,
+  IAiImageInput,
+  IImageDelete,
+  IImageInput,
+  removeImage,
+} from "@/apis/image";
 import ImageList from "@/components/ImageList";
 import { IListItem } from "@/components/List";
 import ProfileCard from "@/components/ProfileCard";
 import ContentsLayout from "@/layouts/ContentsLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { IProfile } from "@/types/Account";
-import { getCookieFromContext } from "@/utils/cookie";
 import { getGameAbilityFromProfile } from "@/utils/game";
-import { NextPageContext } from "next";
+import Modal from "@/components/Modal";
+import {
+  femaleClothMap,
+  IAiImageResponse,
+  IImageResponse,
+  maleClothMap,
+} from "@/types/Image";
+import DropdownMenu from "@/components/DropdownMenu";
+import { IMapleInfoResponse, ServicedGames } from "@/types/Game";
+import { getMapleInfo } from "@/apis/game";
+import { Nullable } from "@/utils/utileTypes";
+
+const colorOptions = [
+  "black",
+  "white",
+  "red",
+  "blue",
+  "yellow",
+  "green",
+  "pink",
+  "orange",
+  "violet",
+  "brown",
+  "gray",
+  "purple",
+  "blonde",
+];
 
 type Props = {
   userProfile: IProfile;
@@ -18,28 +50,177 @@ type Props = {
 };
 const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
+  const femaleCloths = Object.keys(femaleClothMap);
+  const maleCloths = Object.keys(maleClothMap);
 
-  const _mapleGallery =
-    games
-      .filter((game) => game.gameName === "maplestory")[0]
-      ?.gallery.filter((image) => image !== null) || [];
+  const [mapleInfo, setMapleInfo] =
+    React.useState<Nullable<IMapleInfoResponse>>();
 
-  const [mapleGallery, setMapleGallery] = React.useState(_mapleGallery);
-  console.log(_mapleGallery, userProfile);
+  const [name, setName] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const [aiNewImage, setAiNewImage] = React.useState("");
+
+  const [aiGender, setAiGender] = React.useState("boy");
+  const [eyesColor, setEyesColor] = React.useState("black");
+  const [hairColor, setHairColor] = React.useState("black");
+  const [cloths, setCloths] = React.useState(maleCloths);
+  const [selectedCloth, setSelectedCloth] = React.useState("");
+
+  const [selectedProfileGame, setSelectedProfileGame] = React.useState(
+    games[0].gameName
+  );
+
+  const profileGame = games.filter(
+    (game) => game.gameName === selectedProfileGame
+  )[0];
+
+  const _gallery = games.filter(
+    (game) => game.gameName === selectedProfileGame
+  )[0]?.gallery;
+
+  const [gallery, setGallery] = React.useState<Array<string>>(_gallery);
+
+  React.useEffect(() => {
+    const _gallery = games.filter(
+      (game) => game.gameName === selectedProfileGame
+    )[0]?.gallery;
+
+    setGallery(_gallery);
+  }, [selectedProfileGame]);
 
   return (
     <DefaultLayout profile={userProfile}>
       <ContentsLayout>
-        <ProfileCard games={games} />
-        <div className="w-full mt-8 text-xl font-bold text-indigo-600">
-          Gallery
+        <ProfileCard
+          games={games}
+          token={authToken}
+          profile={userProfile}
+          selectedProfileGame={selectedProfileGame}
+          handleProfileGame={handleProfileGame}
+        />
+        <div className="w-full mt-8 flex flex-row justify-between items-center">
+          <span className="text-xl font-bold text-indigo-600">Gallery</span>
+          <div
+            className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
+            onClick={toggleModal}
+          >
+            자짤 만들기!
+          </div>
         </div>
         <ImageList
           className="mt-4"
-          images={mapleGallery}
+          images={gallery}
           uploadImage={AddImage}
           deleteImage={deleteImage}
         />
+
+        <Modal
+          className="w-[750px]"
+          title="AI 이미지 생성 옵션"
+          isOpen={openModal}
+          closeModal={toggleModal}
+        >
+          <>
+            {/* {!mapleInfo && (
+              <div className="h-40 flex items-center justify-center flex-col">
+                <div className="flex flex-row">
+                  <span className="text-indigo-600">메이플 닉네임:</span>
+                  <input
+                    className="focus:outline-none border rounded ml-2 pl-1 text-sm w-40"
+                    onChange={handleName}
+                    value={name}
+                  />
+                  <button
+                    className="bg-indigo-600 text-white px-2 rounded ml-2 text-sm"
+                    onClick={requestGetMapleInfo}
+                  >
+                    검색
+                  </button>
+                </div>
+                {loading && (
+                  <span className="text-xl mt-8 text-slate-400">
+                    Loading...
+                  </span>
+                )}
+              </div>
+            )} */}
+            {selectedProfileGame && (
+              <div className="flex flex-row justify-between">
+                <div className="w-56 relative flex flex-col items-center">
+                  <img
+                    className="object-contain w-56 h-56"
+                    src={profileGame.imageUrl}
+                    alt="maple_profile_image"
+                  />
+                  <span className="absolute top-2">{`${profileGame.name} - ${profileGame.job}`}</span>
+                  <span className="absolute bottom-0">{`World - ${profileGame.world}`}</span>
+                </div>
+                <div className="py-2 ml-4 flex flex-col items-center">
+                  <div className="flex flex-row justify-center items-center space-x-2">
+                    <span>캐릭터 성별: </span>
+                    <label>Boy</label>
+                    <input
+                      type="radio"
+                      onChange={handleAiGender}
+                      value="boy"
+                      checked={aiGender === "boy"}
+                    />
+                    <label>Girl</label>
+                    <input
+                      type="radio"
+                      onChange={handleAiGender}
+                      value="girl"
+                      checked={aiGender === "girl"}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <div className="flex flex-row space-x-2 justify-center items-center">
+                      <span className="text-sm">눈동자 색상 선택 :</span>
+                      <DropdownMenu
+                        className="z-50"
+                        menus={colorOptions}
+                        selected={eyesColor}
+                        onClick={handleEyesColor}
+                      />
+                      <span className="text-sm">머리카락 색상 선택 :</span>
+                      <DropdownMenu
+                        menus={colorOptions}
+                        selected={hairColor}
+                        onClick={handleHairColor}
+                      />
+                    </div>
+                    <span className="text-xs text-slate-500">
+                      - 원본 캐릭터와 다른 색상을 선택하면 정확도와 인식률이
+                      대폭 하락합니다.
+                    </span>
+                    <div className="mt-4">
+                      <span className="text-sm">의상 선택 : </span>
+                      <DropdownMenu
+                        menus={cloths}
+                        selected={selectedCloth}
+                        onClick={handleCloth}
+                      />
+                    </div>
+                  </div>
+                  {!aiNewImage ? (
+                    <button
+                      className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                      onClick={requestCreateAiImage}
+                    >
+                      {loading ? "Loading..." : "이미지 생성"}
+                    </button>
+                  ) : (
+                    <span className="text-sm text-slate-500 mt-8">
+                      {/* 일일 통합 생성 가능 횟수 (00시 초기화) : {limit} */}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        </Modal>
       </ContentsLayout>
     </DefaultLayout>
   );
@@ -53,22 +234,22 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
     const params: IImageDelete = {
       id: userId,
       authToken,
-      gameName: "maplestory",
+      gameName: selectedProfileGame,
       imageIndex,
     };
 
     const response = await removeImage(params);
-    console.log(response);
   }
 
-  function AddImage(event: React.ChangeEvent<HTMLInputElement>) {
-    if (!userId || !authToken) {
-      window.alert("로그인 후 이용가능 합니다!");
+  async function AddImage(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!userId || !authToken || authToken === "undefined") {
+      await window.alert("로그인 후 이용가능 합니다!");
       return;
     }
 
     const imageFile = event.target.files?.item(0);
     const reader = new window.FileReader();
+
     if (imageFile) {
       reader.readAsArrayBuffer(imageFile);
       reader.onloadend = async () => {
@@ -78,15 +259,109 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
           const params: IImageInput = {
             id: userId,
             authToken,
-            gameName: "maplestory",
-            imageIndex: mapleGallery.length,
+            gameName: selectedProfileGame,
+            imageIndex: _gallery.length,
             imageString: imageBase64,
           };
 
-          const response = await addImage(params);
+          const response: IImageResponse = await addImage(params);
+
+          if (response?.Err?.code === "ConditionalCheckFailedException") {
+            window.alert("다시 로그인 후 사용해 주세요!");
+            return;
+          }
+
+          if (response.games?.lostark) {
+            setGallery([...gallery, response.games.lostark.gallery[0]]);
+          } else {
+            setGallery([...gallery, response.games.maplestory.gallery[0]]);
+          }
         }
       };
     }
+  }
+
+  function resetState() {
+    setEyesColor("");
+    setHairColor("");
+    setMapleInfo(null);
+  }
+
+  function toggleModal() {
+    if (!profileGame) {
+      window.alert("게임 캐릭터를 먼저 등록해주세요!");
+      return;
+    }
+    setOpenModal(!openModal);
+    resetState();
+  }
+
+  function handleAiGender(event: React.ChangeEvent<HTMLInputElement>) {
+    setAiGender(event.target.value);
+    setSelectedCloth("");
+
+    if (event.target.value === "boy") {
+      setCloths(maleCloths);
+    } else {
+      setCloths(femaleCloths);
+    }
+  }
+
+  function handleHairColor(color: string) {
+    setHairColor(color);
+  }
+
+  function handleEyesColor(color: string) {
+    setEyesColor(color);
+  }
+
+  function handleCloth(cloth: string) {
+    setSelectedCloth(cloth);
+  }
+
+  async function requestCreateAiImage() {
+    if (!profileGame?.name || !aiGender) {
+      window.alert("이미지 생성을 위한 정보를 적어 주세요!");
+      return;
+    }
+
+    const params: IAiImageInput = {
+      gameUser: profileGame?.name,
+      gender: aiGender,
+      hairColor,
+      eyeColor: eyesColor,
+      cloth: selectedCloth,
+    };
+
+    setLoading(true);
+    const response: IAiImageResponse = await createAiImage(params);
+
+    if (response) {
+      setLoading(false);
+    }
+
+    if (response?.Err === "DailyLimit") {
+      window.alert(
+        "오늘의 무료 이미지 생성 횟수가 모두 소진되었습니다. 아래 어플에서 더 많은 기능을 사용해볼 수 있습니다!"
+      );
+      return;
+    }
+
+    if (response?.Err === "Busy") {
+      window.alert("잠시 후 시도해주세요!");
+      return;
+    }
+    console.log(response.newImage);
+
+    setAiNewImage(response.newImage);
+  }
+
+  function handleName(event: React.ChangeEvent<HTMLInputElement>) {
+    setName(event.target.value);
+  }
+
+  function handleProfileGame(game: ServicedGames) {
+    setSelectedProfileGame(game);
   }
 };
 
