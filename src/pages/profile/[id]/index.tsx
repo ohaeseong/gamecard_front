@@ -7,13 +7,20 @@ import { NextPageContext } from "next";
 type Props = {
   userProfile: IProfile;
   userId?: string;
+  loginedUserId?: string;
   authToken?: string;
 };
-const ProfilePage = ({ userProfile, userId, authToken }: Props) => {
+const ProfilePage = ({
+  userProfile,
+  userId,
+  authToken,
+  loginedUserId,
+}: Props) => {
   return (
     <ProfileContainer
       userProfile={userProfile}
       userId={userId}
+      loginedUserId={loginedUserId}
       authToken={authToken}
     />
   );
@@ -23,6 +30,7 @@ export default ProfilePage;
 
 ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
   const userId = ctx.query.id;
+  const loginedUserId = getCookieFromContext(ctx, "userId", "");
   const token = getCookieFromContext(ctx, "authToken", "");
 
   if (userId) {
@@ -39,6 +47,7 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
     return {
       userProfile,
       userId,
+      loginedUserId,
       authToken: token,
     };
   }
@@ -46,6 +55,7 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
   return {
     userProfile: {},
     userId,
+    loginedUserId,
     authToken: token,
   };
 };

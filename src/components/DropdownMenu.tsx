@@ -22,7 +22,7 @@ const DropdownMenu: React.FC<Props> = ({
     >
       <div>
         <Menu.Button className="inline-flex w-full capitalize justify-center rounded-md bg-indigo-500 hover:bg-opacity-90 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          {!selected ? "Options" : selected}
+          {!selected ? "옵션" : selected}
         </Menu.Button>
       </div>
       <Transition

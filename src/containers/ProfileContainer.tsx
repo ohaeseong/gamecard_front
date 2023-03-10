@@ -2,10 +2,16 @@
 import React from "react";
 import {
   addImage,
+  addImageWithUrl,
   createAiImage,
+  getAiImageUrl,
   IAiImageInput,
+  IGetAiImageUrl,
   IImageDelete,
   IImageInput,
+  IImageUrlInput,
+  IRemoveImageUrlInput,
+  removeAiImageUrl,
   removeImage,
 } from "@/apis/image";
 import ImageList from "@/components/ImageList";
@@ -46,9 +52,15 @@ const colorOptions = [
 type Props = {
   userProfile: IProfile;
   userId?: string;
+  loginedUserId?: string;
   authToken?: string;
 };
-const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
+const ProfileContainer = ({
+  userProfile,
+  authToken,
+  userId,
+  loginedUserId,
+}: Props) => {
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
   const maleCloths = Object.keys(maleClothMap);
@@ -56,11 +68,10 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
   const [mapleInfo, setMapleInfo] =
     React.useState<Nullable<IMapleInfoResponse>>();
 
-  const [name, setName] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
 
-  const [aiNewImage, setAiNewImage] = React.useState("");
+  // const [aiNewImage, setAiNewImage] = React.useState("");
 
   const [aiGender, setAiGender] = React.useState("boy");
   const [eyesColor, setEyesColor] = React.useState("black");
@@ -68,8 +79,12 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
   const [cloths, setCloths] = React.useState(maleCloths);
   const [selectedCloth, setSelectedCloth] = React.useState("");
 
+  const [wait, setWait] = React.useState<Nullable<number>>();
+
+  const game = games.filter((game) => game.level);
+
   const [selectedProfileGame, setSelectedProfileGame] = React.useState(
-    games[0].gameName
+    game[0]?.gameName || ""
   );
 
   const profileGame = games.filter(
@@ -80,14 +95,16 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
     (game) => game.gameName === selectedProfileGame
   )[0]?.gallery;
 
-  const [gallery, setGallery] = React.useState<Array<string>>(_gallery);
+  const [gallery, setGallery] = React.useState<Array<string | null>>([]);
 
   React.useEffect(() => {
-    const _gallery = games.filter(
-      (game) => game.gameName === selectedProfileGame
-    )[0]?.gallery;
+    if (selectedProfileGame) {
+      const _gallery = games.filter(
+        (game) => game.gameName === selectedProfileGame
+      )[0]?.gallery;
 
-    setGallery(_gallery);
+      setGallery(_gallery);
+    }
   }, [selectedProfileGame]);
 
   return (
@@ -101,18 +118,30 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
           handleProfileGame={handleProfileGame}
         />
         <div className="w-full mt-8 flex flex-row justify-between items-center">
-          <span className="text-xl font-bold text-indigo-600">Gallery</span>
-          <div
-            className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
-            onClick={toggleModal}
-          >
-            자짤 만들기!
-          </div>
+          <span className="text-xl font-bold text-indigo-600">
+            Gallery - {gallery.length}/21
+          </span>
+          {loginedUserId === userProfile?.id && (
+            <div className="flex space-x-2">
+              <div
+                className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
+                onClick={toggleModal}
+              >
+                자짤 만들기!
+              </div>
+              <div
+                className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
+                onClick={requestGetAiImageUrl}
+              >
+                자짤 받기!
+              </div>
+            </div>
+          )}
         </div>
         <ImageList
           className="mt-4"
           images={gallery}
-          uploadImage={AddImage}
+          uploadImage={requestAddImage}
           deleteImage={deleteImage}
         />
 
@@ -123,29 +152,6 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
           closeModal={toggleModal}
         >
           <>
-            {/* {!mapleInfo && (
-              <div className="h-40 flex items-center justify-center flex-col">
-                <div className="flex flex-row">
-                  <span className="text-indigo-600">메이플 닉네임:</span>
-                  <input
-                    className="focus:outline-none border rounded ml-2 pl-1 text-sm w-40"
-                    onChange={handleName}
-                    value={name}
-                  />
-                  <button
-                    className="bg-indigo-600 text-white px-2 rounded ml-2 text-sm"
-                    onClick={requestGetMapleInfo}
-                  >
-                    검색
-                  </button>
-                </div>
-                {loading && (
-                  <span className="text-xl mt-8 text-slate-400">
-                    Loading...
-                  </span>
-                )}
-              </div>
-            )} */}
             {selectedProfileGame && (
               <div className="flex flex-row justify-between">
                 <div className="w-56 relative flex flex-col items-center">
@@ -160,14 +166,14 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
                 <div className="py-2 ml-4 flex flex-col items-center">
                   <div className="flex flex-row justify-center items-center space-x-2">
                     <span>캐릭터 성별: </span>
-                    <label>Boy</label>
+                    <label>남성</label>
                     <input
                       type="radio"
                       onChange={handleAiGender}
                       value="boy"
                       checked={aiGender === "boy"}
                     />
-                    <label>Girl</label>
+                    <label>여성</label>
                     <input
                       type="radio"
                       onChange={handleAiGender}
@@ -204,18 +210,13 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
                       />
                     </div>
                   </div>
-                  {!aiNewImage ? (
-                    <button
-                      className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
-                      onClick={requestCreateAiImage}
-                    >
-                      {loading ? "Loading..." : "이미지 생성"}
-                    </button>
-                  ) : (
-                    <span className="text-sm text-slate-500 mt-8">
-                      {/* 일일 통합 생성 가능 횟수 (00시 초기화) : {limit} */}
-                    </span>
-                  )}
+
+                  <button
+                    className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                    onClick={requestCreateAiImage}
+                  >
+                    {loading ? "Loading..." : "이미지 생성"}
+                  </button>
                 </div>
               </div>
             )}
@@ -238,10 +239,22 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
       imageIndex,
     };
 
-    const response = await removeImage(params);
+    await removeImage(params);
+
+    const newGrallery = gallery.map((image, index) => {
+      if (index === imageIndex) {
+        return null;
+      }
+      return image;
+    });
+
+    setGallery(newGrallery);
   }
 
-  async function AddImage(event: React.ChangeEvent<HTMLInputElement>) {
+  async function requestAddImage(
+    event: React.ChangeEvent<HTMLInputElement>,
+    imageIndex?: number
+  ) {
     if (!userId || !authToken || authToken === "undefined") {
       await window.alert("로그인 후 이용가능 합니다!");
       return;
@@ -260,21 +273,45 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
             id: userId,
             authToken,
             gameName: selectedProfileGame,
-            imageIndex: _gallery.length,
+            imageIndex: imageIndex !== undefined ? imageIndex : _gallery.length,
             imageString: imageBase64,
           };
 
           const response: IImageResponse = await addImage(params);
 
           if (response?.Err?.code === "ConditionalCheckFailedException") {
-            window.alert("다시 로그인 후 사용해 주세요!");
+            window.alert("다시 로그인 후 사용해 주세요! ㅠ.ㅠ");
             return;
           }
 
           if (response.games?.lostark) {
-            setGallery([...gallery, response.games.lostark.gallery[0]]);
+            const newImage = response.games.lostark.gallery[0];
+            if (imageIndex === undefined) {
+              setGallery([...gallery, newImage]);
+            } else {
+              const newGrallery = gallery.map((image, index) => {
+                if (index === imageIndex) {
+                  return newImage;
+                }
+                return image;
+              });
+
+              setGallery(newGrallery);
+            }
           } else {
-            setGallery([...gallery, response.games.maplestory.gallery[0]]);
+            const newImage = response.games.maplestory.gallery[0];
+            if (imageIndex === undefined) {
+              setGallery([...gallery, newImage]);
+            } else {
+              const newGrallery = gallery.map((image, index) => {
+                if (index === imageIndex) {
+                  return newImage;
+                }
+                return image;
+              });
+
+              setGallery(newGrallery);
+            }
           }
         }
       };
@@ -288,7 +325,7 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
   }
 
   function toggleModal() {
-    if (!profileGame) {
+    if (!profileGame || !selectedProfileGame) {
       window.alert("게임 캐릭터를 먼저 등록해주세요!");
       return;
     }
@@ -320,21 +357,36 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
   }
 
   async function requestCreateAiImage() {
-    if (!profileGame?.name || !aiGender) {
-      window.alert("이미지 생성을 위한 정보를 적어 주세요!");
+    if (!authToken || !userId) {
+      window.alert("로그인 후 이용해 주세요!");
+      return;
+    }
+
+    if (!profileGame?.name) {
+      window.alert("캐릭터 등록이 필요해요!");
+      return;
+    }
+
+    if (typeof wait === "number") {
+      window.alert("서버에서 그림을 만들고 있어요! 조금만 기다려 주세요!");
       return;
     }
 
     const params: IAiImageInput = {
-      gameUser: profileGame?.name,
+      id: userId,
+      // gameUser: profileGame?.name,
+      gameName: selectedProfileGame,
       gender: aiGender,
       hairColor,
-      eyeColor: eyesColor,
-      cloth: selectedCloth,
+      eyesColor,
+      // cloth: selectedCloth,
+      token: authToken,
     };
 
     setLoading(true);
+
     const response: IAiImageResponse = await createAiImage(params);
+    console.log(response);
 
     if (response) {
       setLoading(false);
@@ -351,13 +403,53 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
       window.alert("잠시 후 시도해주세요!");
       return;
     }
-    console.log(response.newImage);
 
-    setAiNewImage(response.newImage);
+    setWait(response.wait);
+    toggleModal();
   }
 
-  function handleName(event: React.ChangeEvent<HTMLInputElement>) {
-    setName(event.target.value);
+  async function requestGetAiImageUrl() {
+    if (!userId || !authToken) return;
+
+    const params: IGetAiImageUrl = {
+      id: userId,
+      gameName: selectedProfileGame,
+      authToken,
+    };
+
+    const response = await getAiImageUrl(params);
+
+    const imageParams: IImageUrlInput = {
+      id: userId,
+      gameName: selectedProfileGame,
+      authToken,
+      imageIndex: gallery.indexOf(null),
+      imageUrl: response.url,
+    };
+
+    const responseImageUrl = await addImageWithUrl(imageParams);
+
+    if (responseImageUrl?.games) {
+      const newGrallery = gallery.map((image, index) => {
+        if (index === gallery.indexOf(null)) {
+          return selectedProfileGame === "maplestory"
+            ? responseImageUrl.games.maplestory.gallery[0]
+            : responseImageUrl.games.lostark.gallery[0];
+        }
+        return image;
+      });
+
+      setGallery(newGrallery);
+
+      const removeUrlParams: IRemoveImageUrlInput = {
+        id: userId,
+        gameName: selectedProfileGame,
+        authToken,
+      };
+
+      await removeAiImageUrl(removeUrlParams);
+      setWait(null);
+    }
   }
 
   function handleProfileGame(game: ServicedGames) {
@@ -366,308 +458,3 @@ const ProfileContainer = ({ userProfile, authToken, userId }: Props) => {
 };
 
 export default ProfileContainer;
-
-// import Button from "@/components/Button";
-// import React from "react";
-// import List, { IListItem } from "@/components/List";
-// import { BsArrowRightShort } from "react-icons/bs";
-// import { FiEdit } from "react-icons/fi";
-// import Modal from "@/components/Modal";
-// import { CategoryItem } from "@/types/Category";
-// import CategorySelector from "@/components/CategorySelector";
-// import { IProfile } from "@/types/Account";
-// import ProfileCard from "@/components/ProfileCard";
-// import classNames from "classnames";
-
-// import Input from "@/components/Input";
-// import { requestAddTmi, requestUpdateTmi } from "@/apis/tmi";
-// import { requestAddGame } from "@/apis/game";
-// import { getGameAbilityFromProfile } from "@/utils/game";
-// import { useRouter } from "next/router";
-
-// type Props = {
-//   gameTypes: Array<CategoryItem>;
-//   tmiTypes: Array<CategoryItem>;
-//   profile: IProfile;
-//   userId?: string;
-//   token?: string;
-// };
-
-// const ProfileContainer: React.FC<Props> = ({
-//   gameTypes,
-//   tmiTypes,
-//   profile,
-//   userId,
-//   token,
-// }) => {
-//   const router = useRouter();
-
-//   const [openGameBox, setOpenGameBox] = React.useState(false);
-//   const [, setOpenTmiBox] = React.useState(false);
-//   const [openModal, setOpenModal] = React.useState(false);
-
-//   const [essential, setEssential] = React.useState("");
-
-//   const [showForm, setShowForm] = React.useState(false);
-//   const [selectedCategory, setSelectedCategory] = React.useState("");
-
-//   const [tmis, setTmis] = React.useState(profile.tmi);
-
-//   const userGames = getGameAbilityFromProfile<IListItem>(profile.games);
-
-//   const [games] = React.useState(userGames);
-
-//   const [tmiUpdateIndex, setTmiUpdateIndex] = React.useState(-1);
-//   return (
-//     <div className="w-full h-full p-4 flex flex-col">
-//       <div className="space-x-4">
-//         <ProfileCard profile={profile} />
-//       </div>
-
-//       <div className="h-10 border mt-6 flex items-center justify-around p-2 space-x-2 font-semibold">
-//         <span className="text-sky-600 cursor-pointer">Facebook</span>
-//         <span className="text-sky-400 cursor-pointer">Twitter</span>
-//         <span className="text-indigo-500 cursor-pointer" onClick={copyUrl}>
-//           Copy URL
-//         </span>
-//       </div>
-
-//       <div className="space-y-4 mt-6">
-//         <div>
-//           <List title="Games" items={games} />
-//           <Button
-//             className={classNames("mt-2", {
-//               hidden: profile.id !== userId || token === "undefined",
-//             })}
-//             onClick={onClickGameButton}
-//           >
-//             Game 추가하기!
-//           </Button>
-//         </div>
-//         <div>
-//           <div className="flex flex-col min-h-[10rem]">
-//             <div className="text-lg font-semibold mb-3">T.M.I</div>
-//             <div className="space-y-2">
-//               {tmis.length === 0 && (
-//                 <div className="w-full h-[10rem] border border-slate-200 rounded flex justify-center items-center">
-//                   <span className="text-slate-500">
-//                     아직 등록된 포스트가 없어요!
-//                   </span>
-//                 </div>
-//               )}
-//               {tmis.map((tmi, index) => (
-//                 <div
-//                   key={tmi.name + index}
-//                   className="flex flex-row border-b cursor-pointer justify-between"
-//                 >
-//                   <div className="flex flex-row">
-//                     <div className="w-6 h-6 mr-2 flex justify-center items-center border font-bold bg-indigo-500 text-white rounded">
-//                       {tmi.name[0].toUpperCase()}
-//                     </div>
-//                     <span>{tmi.content}</span>
-//                   </div>
-
-//                   <FiEdit
-//                     className={classNames("h-5 w-5 mr-1", {
-//                       hidden: profile.id !== userId || token === "undefined",
-//                     })}
-//                     onClick={() => {
-//                       setTmiUpdateIndex(index);
-//                       onClickTmiButton();
-//                       setEssential(tmi.content);
-//                     }}
-//                     color="gray"
-//                   />
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//           <Button
-//             className={classNames("mt-2", {
-//               hidden: profile.id !== userId || token === "undefined",
-//             })}
-//             onClick={onClickTmiButton}
-//           >
-//             T.M.I 추가하기!
-//           </Button>
-
-//           {openGameBox ? (
-//             <Modal title="Game Box" isOpen={openModal} closeModal={toggleModal}>
-//               {!showForm ? (
-//                 <CategorySelector
-//                   categories={gameTypes}
-//                   selected={selectedCategory}
-//                   onClick={handleSelectedGame}
-//                 />
-//               ) : (
-//                 <div className="h-[12rem] w-full flex flex-col items-center justify-center">
-//                   <Input
-//                     placeholder="게임 닉네임"
-//                     onChange={handleEssentialForm}
-//                     value={essential}
-//                   />
-
-//                   <Button className="w-32 mt-6" onClick={handleGame}>
-//                     추가하기
-//                   </Button>
-//                 </div>
-//               )}
-
-//               <div className="w-full flex justify-end pr-1 mt-4">
-//                 <BsArrowRightShort
-//                   className={classNames(
-//                     "hover:fill-indigo-500 transition-colors",
-//                     {
-//                       hidden: showForm,
-//                     }
-//                   )}
-//                   cursor="pointer"
-//                   color="gray"
-//                   size={35}
-//                   onClick={() => setShowForm(true)}
-//                 />
-//               </div>
-//             </Modal>
-//           ) : (
-//             <Modal title="T.M.I" isOpen={openModal} closeModal={toggleModal}>
-//               {!showForm ? (
-//                 <CategorySelector
-//                   categories={tmiTypes}
-//                   selected={selectedCategory}
-//                   onClick={handleSelectedGame}
-//                 />
-//               ) : (
-//                 <div className="h-[12rem] w-full flex flex-col items-center justify-center">
-//                   <Input
-//                     className="w-96"
-//                     placeholder="나의 T.M.I"
-//                     onChange={handleEssentialForm}
-//                     value={essential}
-//                   />
-
-//                   <Button className="w-96 mt-6" onClick={handleTMI}>
-//                     {!tmiUpdateIndex ? "추가하기" : "수정하기"}
-//                   </Button>
-//                 </div>
-//               )}
-
-//               <div className="w-full flex justify-end pr-1 mt-4">
-//                 <BsArrowRightShort
-//                   className={classNames(
-//                     "hover:fill-indigo-500 transition-colors",
-//                     {
-//                       hidden: showForm,
-//                     }
-//                   )}
-//                   cursor="pointer"
-//                   color="gray"
-//                   size={35}
-//                   onClick={() => setShowForm(true)}
-//                 />
-//               </div>
-//             </Modal>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-
-//   function handleEssentialForm(e: React.ChangeEvent<HTMLInputElement>) {
-//     setEssential(e.target.value);
-//   }
-
-//   function onClickGameButton() {
-//     setOpenTmiBox(false);
-//     setOpenGameBox(true);
-//     setShowForm(false);
-//     toggleModal();
-//   }
-
-//   function onClickTmiButton() {
-//     setOpenTmiBox(true);
-//     setOpenGameBox(false);
-//     setShowForm(false);
-//     toggleModal();
-//   }
-
-//   function toggleModal() {
-//     setSelectedCategory("");
-//     setEssential("");
-//     setOpenModal(!openModal);
-//   }
-
-//   function handleSelectedGame(game: string) {
-//     setSelectedCategory(game);
-//   }
-
-//   async function handleTMI() {
-//     if (!token) {
-//       window.alert("로그인 후 다시시도 해주세요!");
-//       return;
-//     }
-
-//     if (!essential || !selectedCategory) {
-//       window.alert("양식을 지켜주세요!");
-//       return;
-//     }
-
-//     if (tmiUpdateIndex === -1) {
-//       const response = await requestAddTmi({
-//         id: profile.id,
-//         tmiName: selectedCategory,
-//         tmiContent: essential,
-//         authToken: token,
-//       });
-//       setTmis(response.tmi || []);
-//     } else {
-//       const response = await requestUpdateTmi({
-//         id: profile.id,
-//         tmiName: selectedCategory,
-//         tmiContent: essential,
-//         authToken: token,
-//         tmiIndex: tmiUpdateIndex,
-//       });
-
-//       setTmis((tmis) => {
-//         tmis[tmiUpdateIndex] = response.tmi[0];
-
-//         return tmis;
-//       });
-//       setTmiUpdateIndex(-1);
-//     }
-//     toggleModal();
-//   }
-
-//   async function handleGame() {
-//     if (!token) {
-//       window.alert("로그인 후 다시시도 해주세요!");
-//       return;
-//     }
-
-//     if (!essential || !selectedCategory) {
-//       window.alert("양식을 지켜주세요!");
-//       return;
-//     }
-
-//     const response = await requestAddGame({
-//       id: profile.id,
-//       gameName: selectedCategory,
-//       gameUser: essential,
-//       authToken: token,
-//     });
-//     console.log(response);
-
-//     toggleModal();
-//   }
-
-//   function copyUrl() {
-//     if (typeof window !== "undefined") {
-//       const hostname = window.location.hostname;
-//       navigator.clipboard.writeText(`http://${hostname}${router.asPath}`);
-
-//       window.alert("카피 완료!");
-//     }
-//   }
-// };
-
-// export default ProfileContainer;

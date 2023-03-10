@@ -21,15 +21,18 @@ interface IGameInput {
 }
 
 export function requestAddGame(variables: IGameInput) {
-  const response = fetch(`${SERVER_URL}/dev/game`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      ...variables,
-    }),
-  })
+  const response = fetch(
+    ` https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com/dev/game`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...variables,
+      }),
+    }
+  )
     .then((response) => response.json())
     .catch((error) => console.log("error:", error));
 

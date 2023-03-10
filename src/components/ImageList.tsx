@@ -1,7 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { IImageInput } from "@/apis/image";
 import classNames from "classnames";
-import { indexOf } from "lodash";
 import React, { ChangeEvent } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Button from "./Button";
@@ -9,8 +7,11 @@ import Modal from "./Modal";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
-  images: Array<string>;
-  uploadImage?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  images: Array<string | null>;
+  uploadImage?: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index?: number
+  ) => void;
   deleteImage?: (imageIndex: number) => void;
 };
 
@@ -31,14 +32,24 @@ const ImageList: React.FC<Props> = ({
       )}
     >
       {images.map((image, index) => (
-        <>
+        <div key={index}>
           {!image ? (
-            <div
-              key={index}
-              className="w-40 h-52 border rounded flex justify-center items-center"
+            <label
+              htmlFor="thumbnail_update"
+              className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer"
             >
               <AiOutlinePlus />
-            </div>
+              {typeof uploadImage === "function" && (
+                <input
+                  className="hidden"
+                  id="thumbnail_update"
+                  type="file"
+                  multiple={false}
+                  onChange={(event) => uploadImage(event, index)}
+                  accept="image/gif, image/jpeg, image/jpg, image/png"
+                />
+              )}
+            </label>
           ) : (
             <img
               className="w-40 h-52 object-contain border rounded cursor-pointer"
@@ -48,9 +59,9 @@ const ImageList: React.FC<Props> = ({
               onClick={handleImage(image)}
             />
           )}
-        </>
+        </div>
       ))}
-      {typeof uploadImage === "function" && (
+      {typeof uploadImage === "function" && images.length < 21 && (
         <label
           htmlFor="thumbnail_update"
           className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer"
@@ -88,6 +99,7 @@ const ImageList: React.FC<Props> = ({
     return () => {
       if (typeof _deleteImage === "function") {
         _deleteImage(imageIndex);
+        toggleModal();
       }
     };
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import classNames from "classnames";
 import { IListItem } from "./List";
@@ -5,7 +6,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { IProfile } from "@/types/Account";
 import Modal from "./Modal";
 import { requestAddGame } from "@/apis/game";
-import { ILostArk, IMapleStory, ServicedGames } from "@/types/Game";
+import { ServicedGames } from "@/types/Game";
 import { Nullable } from "@/utils/utileTypes";
 import Image from "next/image";
 
@@ -20,7 +21,7 @@ type Props = {
 
 const ProfileCard: React.FC<Props> = ({
   className,
-  games,
+  games: _games,
   token,
   profile,
   selectedProfileGame,
@@ -32,26 +33,54 @@ const ProfileCard: React.FC<Props> = ({
   const [gameUserName, setGameUserName] = React.useState("");
   const [seletedGame, setSeletedGame] =
     React.useState<Nullable<ServicedGames>>();
+  const games = _games.filter((game) => game.level);
+
+  const profileGame = games.filter(
+    (game) => game.gameName === selectedProfileGame
+  )[0];
 
   return (
     <>
       <div className="flex flex-row items-center">
         <div
           className={classNames(
-            "w-full lg:min-h-[320px] min-h-[200px] rounded-xl bg-no-repeat bg-center bg-cover flex flex-col justify-end p-3",
+            "w-full lg:min-h-[320px] border min-h-[200px] rounded-xl bg-no-repeat bg-center bg-cover flex flex-col justify-end p-3",
             className
           )}
           style={{
-            backgroundImage:
-              selectedProfileGame === "maplestory"
-                ? `url(/images/cover/maple_cover.jpg)`
-                : `url(/images/cover/lostark_cover.jpg)`,
+            backgroundImage: getProfileCardBackgroundImage(),
           }}
         >
-          {/* <div className="w-fit bg-slate-600 rounded py-1 px-3 text-white flex items-center space-x-1">
-          <span className="text-lg font-semibold"># {maple?.name}</span>
-          <span className="text-base"> - Lv {maple?.level}</span>
-        </div> */}
+          {games.length === 0 ? (
+            <div className="w-full lg:min-h-[320px] min-h-[200px] flex justify-center items-center">
+              <h1 className="text-xl font-semibold text-indigo-600">{`게임 캐릭터 등록 하기! ->`}</h1>
+            </div>
+          ) : (
+            selectedProfileGame === "maplestory" && (
+              <div className="flex justify-between items-end">
+                <div className="w-fit h-fit bg-slate-200 rounded py-1 px-3 text-white flex items-center space-x-1">
+                  <span className="text-lg font-semibold flex items-center justify-center text-indigo-500 capitalize">
+                    # {selectedProfileGame}
+                  </span>
+                  <span className="text-sm text-indigo-500">
+                    {" "}
+                    - Lv {profileGame?.level}
+                  </span>
+                </div>
+                <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
+                  <span className="mt-2 text-xs">
+                    {`<${profileGame.world} - ${profileGame.job}>`}
+                  </span>
+                  <img
+                    className="bg-contain absolute"
+                    src={profileGame.imageUrl}
+                    alt="maplestory user image"
+                  />
+                  <span className="mb-2 text-xs">{`<${profileGame.name}>`}</span>
+                </div>
+              </div>
+            )
+          )}
         </div>
         <div className="w-20 h-[90%] rounded-r-xl shadow-xl justify-evenly items-center bg-slate-100 flex flex-col">
           {games.map((game) => (
@@ -167,11 +196,22 @@ const ProfileCard: React.FC<Props> = ({
 
     if (response) {
       setLoading(false);
+      toggleModal();
+    }
+  }
+
+  function getProfileCardBackgroundImage() {
+    if (games.length === 0) {
+      return "";
     }
 
-    console.log(response, seletedGame, gameUserName);
+    if (selectedProfileGame === "maplestory") {
+      return "url(/images/cover/maple_cover.jpg)";
+    }
 
-    // toggleModal();
+    if (selectedProfileGame === "lostark") {
+      return "url(/images/cover/lostark_cover.jpg)";
+    }
   }
 };
 

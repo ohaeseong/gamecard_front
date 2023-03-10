@@ -24,6 +24,30 @@ export function addImage(variables: IImageInput) {
   return response;
 }
 
+export interface IImageUrlInput {
+  id: string;
+  gameName: string;
+  authToken: string;
+  imageIndex: number;
+  imageUrl: string;
+}
+
+export function addImageWithUrl(variables: IImageUrlInput) {
+  const response = fetch(`${SERVER_URL}/dev/image/url`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...variables,
+    }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}
+
 export interface IImageDelete {
   id: string;
   gameName: string;
@@ -47,35 +71,47 @@ export function removeImage(variables: IImageDelete) {
   return response;
 }
 
+// const AI_IMAGE_SERVER_URL =
+//   "https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com";
+
 const AI_IMAGE_SERVER_URL =
-  "https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com";
+  "https://v8apilr4m5.execute-api.ap-northeast-2.amazonaws.com";
 
 export interface IAiImageInput {
-  gameUser: string;
+  id: string;
+  // gameUser: string;
+  gameName: string;
   gender: string;
   hairColor: string;
-  eyeColor: string;
-  cloth: string;
+  eyesColor: string;
+  // cloth: string;
+  token: string;
 }
 
 export function createAiImage({
-  gameUser,
+  id,
+  // gameUser,
   gender,
+  gameName,
   hairColor,
-  eyeColor,
-  cloth,
+  eyesColor,
+  // cloth,
+  token,
 }: IAiImageInput) {
-  const response = fetch(`${AI_IMAGE_SERVER_URL}/dev/nyai/promote`, {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      gameUser,
+      id,
+      // gameUser,
       gender,
       hairColor,
-      eyeColor,
-      cloth,
+      eyesColor,
+      gameName,
+      // cloth,
+      authToken: token,
     }),
   })
     .then((response) => response.json())
@@ -90,6 +126,52 @@ export function getLimit() {
     headers: {
       "Content-Type": "application/json",
     },
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}
+
+export interface IGetAiImageUrl {
+  id: string;
+  gameName: string;
+  authToken: string;
+}
+
+export function getAiImageUrl({ id, gameName, authToken }: IGetAiImageUrl) {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen/check`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+      gameName,
+      authToken,
+    }),
+  })
+    .then((response) => response.json())
+    .catch((error) => console.log("error:", error));
+
+  return response;
+}
+
+export interface IRemoveImageUrlInput {
+  id: string;
+  gameName: string;
+  authToken: string;
+}
+
+export function removeAiImageUrl(variables: IRemoveImageUrlInput) {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...variables,
+    }),
   })
     .then((response) => response.json())
     .catch((error) => console.log("error:", error));

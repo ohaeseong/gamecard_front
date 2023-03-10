@@ -20,8 +20,7 @@ export interface IImageResponse {
 }
 
 export interface IAiImageResponse {
-  newImage: string;
-  limit: number;
+  wait: number;
   Err?: string;
 }
 
