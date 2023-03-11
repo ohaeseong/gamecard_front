@@ -221,6 +221,7 @@ const ProfileCard: React.FC<Props> = ({
       return;
     }
 
+
     setLoading(true);
 
     const response = await addGameCharacter(
@@ -231,8 +232,15 @@ const ProfileCard: React.FC<Props> = ({
     );
 
     if (response) {
+      if (!response.name) {
+        window.alert("캐릭터를 찾지 못했습니다.");
+      }
+
       setLoading(false);
+      
       toggleModal();
+      handleGame(seletedGame);
+      handleProfileGame(seletedGame);
     }
   }
 

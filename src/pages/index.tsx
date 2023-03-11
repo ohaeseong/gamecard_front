@@ -32,11 +32,14 @@ export default function HomePage({ profile }: Props) {
           </div> */}
           <div className="w-full h-2/3 border mt-2 bg-indigo-500 rounded flex flex-col items-center justify-around">
             <h1 className="text-white lg:text-3xl text-xl font-extrabold">
-              자캐를 간직하는 종합 게임 프로필 서비스
+            <div className="flex flex-col items-center">
+              자캐를 간직하는
+            </div>
+              종합 게임 프로필 서비스
             </h1>
-            <h1 className="text-white lg:text-3xl text-xl font-extrabold">
+            <h3 className="text-white lg:text-xl2 text-xl font-bold">
               GAMECARD.GG
-            </h1>
+            </h3>
             <div className="flex flex-col">
               <span className="text-white text-xl font-extrabold">
                 Beta v1.
