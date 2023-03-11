@@ -440,7 +440,6 @@ const ProfileContainer = ({
     };
 
     const response = await getAiImageUrl(params);
-    // console.log(response);
 
     const imageParams: IImageUrlInput = {
       id: userId,
@@ -452,11 +451,6 @@ const ProfileContainer = ({
     };
 
     const responseImageUrl = await addImageWithUrl(imageParams);
-    console.log(
-      gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null),
-      gallery.length,
-      responseImageUrl
-    );
 
     if (responseImageUrl?.games) {
       if (gallery.indexOf(null) === -1) {
