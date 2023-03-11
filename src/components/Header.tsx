@@ -27,7 +27,15 @@ const Header: React.FC<Props> = ({ className, profile }) => {
       )}
     >
       <h1 className="text-lg font-bold text-indigo-600">
-        <Link href="/">Game-Card</Link>
+        <Link href="/">
+        <img
+              className="w-30 h-12 object-contain border rounded cursor-pointer"
+              key={`/images/etc/img2.png`}
+              src={`/images/etc/img2.png`}
+              alt={"title_image"}
+            />
+
+        </Link>
       </h1>
       {userId && profile ? (
         <Profile profile={profile} />

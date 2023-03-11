@@ -98,14 +98,14 @@ const LoginContainer: React.FC = ({}) => {
 
   async function onLogin() {
     if (!id || !pw) {
-      window.alert("양식을 확인해 주세요!");
+      window.alert("양식을 확인해 주세요");
       return;
     }
 
     const response: IResponseLogin = await login({ id, pw });
 
     if (response?.Err === "NotExistUser") {
-      window.alert("아이디 혹은 비밀번호를 확인해주세요!");
+      window.alert("아이디 혹은 비밀번호를 확인해주세요");
       return;
     }
     const { authToken } = response;
@@ -117,19 +117,19 @@ const LoginContainer: React.FC = ({}) => {
 
   async function onRegist() {
     if (!id || !pw || !comfirmPw) {
-      window.alert("양식을 확인해 주세요!");
+      window.alert("양식을 확인해 주세요");
       return;
     }
 
     if (pw !== comfirmPw) {
-      window.alert("비밀번호가 같지 않아요!");
+      window.alert("비밀번호가 다릅니다");
       return;
     }
 
     const response: IResponseLogin = await createAccount({ id, pw });
 
     if (response?.Err === "existnick") {
-      window.alert("이미 등록된 ID에요!");
+      window.alert("이미 등록된 ID에요");
       return;
     }
 
@@ -138,7 +138,7 @@ const LoginContainer: React.FC = ({}) => {
     setCookie("authToken", authToken);
     setCookie("userId", id);
 
-    router.push("/");
+    router.push(`/profile/${id}`);
   }
 
   function handleId(e: React.ChangeEvent<HTMLInputElement>) {

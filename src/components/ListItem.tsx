@@ -80,7 +80,7 @@ const MapleStory: React.FC<MapleStoryProps> = ({ className, item }) => {
             alt="lol_user_profile"
           />
           <span>{item.name} </span>
-          <span>{item.job} -</span>
+          <span>{item.job.split('/')[1]} -</span>
           <span>[{item.level}v]</span>
         </div>
 

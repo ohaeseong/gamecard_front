@@ -15,7 +15,7 @@ interface IMenu {
 
 const menus: Array<IMenu> = [
   {
-    label: "Picture Store",
+    label: "이미지",
     icon: "picture",
     href: "/",
   },

@@ -53,7 +53,7 @@ const ProfileCard: React.FC<Props> = ({
         >
           {games.length === 0 ? (
             <div className="w-full lg:min-h-[320px] min-h-[200px] flex justify-center items-center">
-              <h1 className="text-xl font-semibold text-indigo-600">{`게임 캐릭터 등록 하기! ->`}</h1>
+              <h1 className="text-xl font-semibold text-indigo-300">{`캐릭터를 등록해주세요`}</h1>
             </div>
           ) : (
             <>
@@ -70,14 +70,14 @@ const ProfileCard: React.FC<Props> = ({
                   </div>
                   <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
                     <span className="mt-2 text-xs">
-                      {`<${profileGame.world} - ${profileGame.job}>`}
+                      {`${profileGame.world} - ${profileGame.job.split('/')[1]}`}
                     </span>
                     <img
                       className="bg-contain absolute"
                       src={profileGame.imageUrl}
                       alt="maplestory user image"
                     />
-                    <span className="mb-2 text-xs">{`<${profileGame.name}>`}</span>
+                    <span className="mb-2 text-xs">{`${profileGame.name}`}</span>
                   </div>
                 </div>
               )}
@@ -89,19 +89,19 @@ const ProfileCard: React.FC<Props> = ({
                     </span>
                     <span className="text-sm text-indigo-500">
                       {" "}
-                      - Lv {profileGame?.level}
+                      - {profileGame?.level}
                     </span>
                   </div>
                   <div className="w-40 h-50 border relative bg-white rounded flex flex-col justify-between items-center">
                     <span className="my-2 text-xs">
-                      {`<${profileGame.world} - ${profileGame.job}>`}
+                      {`${profileGame.world} - ${profileGame.job}`}
                     </span>
                     <img
                       className="bg-contain"
                       src={profileGame.imageUrl}
                       alt="maplestory user image"
                     />
-                    <span className="my-2 text-xs">{`<${profileGame.name}>`}</span>
+                    <span className="my-2 text-xs">{`${profileGame.name}`}</span>
                   </div>
                 </div>
               )}
@@ -136,7 +136,7 @@ const ProfileCard: React.FC<Props> = ({
       {openModal && (
         <Modal
           className="w-[750px]"
-          title={!seletedGame ? "추가할 게임 선택" : "유저 닉네임 검색"}
+          title={!seletedGame ? "게임 선택" : "캐릭터 등록"}
           isOpen={openModal}
           closeModal={toggleModal}
         >
@@ -161,7 +161,7 @@ const ProfileCard: React.FC<Props> = ({
               </div>
             ) : (
               <div className="flex flex-row">
-                <span className="text-indigo-600">사용자 닉네임:</span>
+                <span className="text-indigo-600">닉네임:</span>
                 <input
                   className="focus:outline-none border rounded ml-2 pl-1 text-sm w-40"
                   onChange={handleUserName}
@@ -202,12 +202,12 @@ const ProfileCard: React.FC<Props> = ({
 
   async function addGameCharacter() {
     if (!token) {
-      window.alert("로그인 후 다시 시도 해주세요!");
+      window.alert("로그인 후 다시 시도 해주세요");
       return;
     }
 
     if (!gameUserName || !seletedGame) {
-      window.alert("양식을 지켜주세요!");
+      window.alert("양식을 지켜주세요");
       return;
     }
 
@@ -232,7 +232,7 @@ const ProfileCard: React.FC<Props> = ({
     }
 
     if (selectedProfileGame === "maplestory") {
-      return "url(/images/cover/maple_cover.jpg)";
+      return "url(/images/cover/maple_cover_2.png)";
     }
 
     if (selectedProfileGame === "lostark") {

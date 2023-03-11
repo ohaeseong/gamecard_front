@@ -116,7 +116,7 @@ const ProfileContainer = ({
         />
         <div className="w-full mt-8 flex flex-row justify-between items-center">
           <span className="text-xl font-bold text-indigo-600">
-            Gallery - {gallery.length}/21
+            갤러리 ({gallery.length}/21)
           </span>
           {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2">
@@ -124,13 +124,13 @@ const ProfileContainer = ({
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
                 onClick={toggleModal}
               >
-                자짤 만들기!
+                이미지 생성
               </div>
               <div
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
                 onClick={requestGetAiImageUrl}
               >
-                자짤 받기!
+                이미지 받기
               </div>
             </div>
           )}
@@ -144,7 +144,7 @@ const ProfileContainer = ({
 
         <Modal
           className="w-[750px]"
-          title="AI 이미지 생성 옵션"
+          title="이미지 생성 옵션"
           isOpen={openModal}
           closeModal={toggleModal}
         >
@@ -157,8 +157,8 @@ const ProfileContainer = ({
                     src={profileGame.imageUrl}
                     alt="maple_profile_image"
                   />
-                  <span className="absolute top-2">{`${profileGame.name} - ${profileGame.job}`}</span>
-                  <span className="absolute bottom-0">{`World - ${profileGame.world}`}</span>
+                  {/* <span className="absolute top-2">{`${profileGame.name} - ${profileGame.job.split('/')[1]}`}</span> */}
+                  <span className="absolute bottom-0">{`소스 이미지`}</span>
                 </div>
                 <div className="py-2 ml-4 flex flex-col items-center">
                   <div className="flex flex-row justify-center items-center space-x-2">
@@ -220,12 +220,26 @@ const ProfileContainer = ({
           </>
         </Modal>
       </ContentsLayout>
+      <footer className="border w-full h-20 absolute bottom-0 pl-20 py-4">
+        <span className="text-xs text-slate-500">
+          GAMECARD.GG is not associated with NEXON Korea.
+        </span>
+        <br></br>
+        <span className="text-xs text-slate-500">
+          GAMECARD.GG is not associated with Smilegate RPG & Smilegate Stove.
+        </span>
+        <br></br>
+        <span className="text-xs text-slate-500">
+          Games metadata is powered by IGDB.com.
+        </span>
+        
+      </footer>
     </DefaultLayout>
   );
 
   async function deleteImage(imageIndex: number) {
     if (!userId || !authToken) {
-      window.alert("로그인 후 이용가능 합니다!");
+      window.alert("로그인이 필요합니다");
       return;
     }
 
@@ -283,7 +297,7 @@ const ProfileContainer = ({
           const response: IImageResponse = await addImage(params);
 
           if (response?.Err?.code === "ConditionalCheckFailedException") {
-            window.alert("다시 로그인 후 사용해 주세요! ㅠ.ㅠ");
+            window.alert("다시 로그인 해주세요.");
             return;
           }
 
@@ -334,7 +348,7 @@ const ProfileContainer = ({
 
   function toggleModal() {
     if (!profileGame || !selectedProfileGame) {
-      window.alert("게임 캐릭터를 먼저 등록해주세요!");
+      window.alert("캐릭터를 등록해주세요");
       return;
     }
     setOpenModal(!openModal);
@@ -366,17 +380,23 @@ const ProfileContainer = ({
 
   async function requestCreateAiImage() {
     if (!authToken || !userId) {
-      window.alert("로그인 후 이용해 주세요!");
+      window.alert("로그인 후 이용해 주세요");
       return;
     }
 
     if (!profileGame?.name) {
-      window.alert("캐릭터 등록이 필요해요!");
+      window.alert("캐릭터 등록이 필요해요");
       return;
     }
 
+    if (wait === -1) {
+      window.alert("서버에서 그림을 만들고 있어요. 조금만 기다려 주세요.");
+      return;
+    }
+
+
     if (typeof wait === "number") {
-      window.alert("서버에서 그림을 만들고 있어요! 조금만 기다려 주세요!");
+      window.alert(`${wait}초 후에 시도해주세요`);
       return;
     }
 
