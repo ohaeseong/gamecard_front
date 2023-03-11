@@ -6,12 +6,14 @@ import { NextPageContext } from "next";
 
 type Props = {
   userProfile: IProfile;
+  logindUserProfile?: IProfile;
   userId?: string;
   loginedUserId?: string;
   authToken?: string;
 };
 const ProfilePage = ({
   userProfile,
+  logindUserProfile,
   userId,
   authToken,
   loginedUserId,
@@ -19,6 +21,7 @@ const ProfilePage = ({
   return (
     <ProfileContainer
       userProfile={userProfile}
+      logindUserProfile={logindUserProfile}
       userId={userId}
       loginedUserId={loginedUserId}
       authToken={authToken}
@@ -38,6 +41,10 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
       id: typeof ctx.query.id === "string" ? ctx.query.id : "",
     });
 
+    const logindUserProfile: IProfile = await getProfileById({
+      id: loginedUserId,
+    });
+
     if (userProfile?.Err === "NotExistUser" && ctx.res) {
       ctx.res.statusCode = 404;
       ctx.res.end("Not found");
@@ -48,6 +55,7 @@ ProfilePage.getInitialProps = async (ctx: NextPageContext) => {
       userProfile,
       userId,
       loginedUserId,
+      logindUserProfile,
       authToken: token,
     };
   }

@@ -17,6 +17,12 @@ type Props = {
   profile: IProfile;
   selectedProfileGame: string;
   handleProfileGame: (game: ServicedGames) => void;
+  addGameCharacter: (
+    profile: IProfile,
+    seletedGame: string,
+    gameUserName: string,
+    token: string
+  ) => any;
 };
 
 const ProfileCard: React.FC<Props> = ({
@@ -26,10 +32,12 @@ const ProfileCard: React.FC<Props> = ({
   profile,
   selectedProfileGame,
   handleProfileGame,
+  addGameCharacter,
 }) => {
   const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  // const [profile, setProfile] = React.useState(_profile);
   const [gameUserName, setGameUserName] = React.useState("");
   const [seletedGame, setSeletedGame] =
     React.useState<Nullable<ServicedGames>>();
@@ -70,7 +78,9 @@ const ProfileCard: React.FC<Props> = ({
                   </div>
                   <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
                     <span className="mt-2 text-xs">
-                      {`${profileGame.world} - ${profileGame.job.split('/')[1]}`}
+                      {`${profileGame.world} - ${
+                        profileGame.job.split("/")[1]
+                      }`}
                     </span>
                     <img
                       className="bg-contain absolute"
@@ -169,7 +179,7 @@ const ProfileCard: React.FC<Props> = ({
                 />
                 <button
                   className="bg-indigo-600 text-white px-2 rounded ml-2 text-sm"
-                  onClick={addGameCharacter}
+                  onClick={requestAddGameCharacter}
                 >
                   검색
                 </button>
@@ -200,7 +210,7 @@ const ProfileCard: React.FC<Props> = ({
     };
   }
 
-  async function addGameCharacter() {
+  async function requestAddGameCharacter() {
     if (!token) {
       window.alert("로그인 후 다시 시도 해주세요");
       return;
@@ -213,12 +223,12 @@ const ProfileCard: React.FC<Props> = ({
 
     setLoading(true);
 
-    const response = await requestAddGame({
-      id: profile.id,
-      gameName: seletedGame,
-      gameUser: gameUserName,
-      authToken: token,
-    });
+    const response = await addGameCharacter(
+      profile,
+      seletedGame,
+      gameUserName,
+      token
+    );
 
     if (response) {
       setLoading(false);

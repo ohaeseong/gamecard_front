@@ -1,8 +1,8 @@
 import { IProfile } from "@/types/Account";
 import classNames from "classnames";
 import Cookies from "js-cookie";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import Profile from "./Profile";
 
@@ -28,13 +28,13 @@ const Header: React.FC<Props> = ({ className, profile }) => {
     >
       <h1 className="text-lg font-bold text-indigo-600">
         <Link href="/">
-        <img
-              className="w-30 h-12 object-contain border rounded cursor-pointer"
-              key={`/images/etc/img2.png`}
-              src={`/images/etc/img2.png`}
-              alt={"title_image"}
-            />
-
+          <Image
+            className="w-30 h-12 object-contain border rounded cursor-pointer"
+            width={120}
+            height={48}
+            src={`/images/logos/img2.png`}
+            alt={"title_image"}
+          />
         </Link>
       </h1>
       {userId && profile ? (

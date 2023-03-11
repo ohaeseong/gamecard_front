@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import { IProfile } from "@/types/Account";
@@ -19,9 +20,12 @@ const DefaultLayout: React.FC<Props> = ({ children, profile }) => {
         })}
         profile={profile}
       />
-      <div className="flex flex-row h-full">
-        <Navigation className="mt-8 lg:block hidden" />
-        {children}
+      <div className="flex flex-col h-full justify-between">
+        <div>
+          {/* <Navigation className="mt-8 lg:block hidden" /> */}
+          {children}
+        </div>
+        <Footer />
       </div>
     </div>
   );

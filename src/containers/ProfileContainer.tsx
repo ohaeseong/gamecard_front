@@ -30,34 +30,36 @@ import {
 } from "@/types/Image";
 import DropdownMenu from "@/components/DropdownMenu";
 import { IMapleInfoResponse, ServicedGames } from "@/types/Game";
-import { getMapleInfo } from "@/apis/game";
+import { getMapleInfo, requestAddGame } from "@/apis/game";
 import { Nullable } from "@/utils/utileTypes";
 import { getProfileById } from "@/apis/profile";
 
 const colorOptions = [
-  "black",
-  "white",
-  "red",
-  "blue",
-  "yellow",
-  "green",
-  "pink",
-  "orange",
-  "violet",
-  "brown",
-  "gray",
-  "purple",
-  "blonde",
+  { label: "검정색", value: "black" },
+  { label: "흰색", value: "white" },
+  { label: "빨간색", value: "red" },
+  { label: "파란색", value: "blue" },
+  { label: "노란색", value: "yellow" },
+  { label: "녹색", value: "green" },
+  { label: "핑크색", value: "pink" },
+  { label: "오랜지색", value: "orange" },
+  { label: "바이올랫색", value: "violet" },
+  { label: "갈색", value: "brown" },
+  { label: "회색", value: "gray" },
+  { label: "보라색", value: "purple" },
+  { label: "회색", value: "blonde" },
 ];
 
 type Props = {
   userProfile: IProfile;
+  logindUserProfile?: IProfile;
   userId?: string;
   loginedUserId?: string;
   authToken?: string;
 };
 const ProfileContainer = ({
   userProfile: _userProfile,
+  logindUserProfile,
   authToken,
   userId,
   loginedUserId,
@@ -105,7 +107,7 @@ const ProfileContainer = ({
   }, [selectedProfileGame]);
 
   return (
-    <DefaultLayout profile={userProfile}>
+    <DefaultLayout profile={logindUserProfile}>
       <ContentsLayout>
         <ProfileCard
           games={games}
@@ -113,6 +115,7 @@ const ProfileContainer = ({
           profile={userProfile}
           selectedProfileGame={selectedProfileGame}
           handleProfileGame={handleProfileGame}
+          addGameCharacter={addGameCharacter}
         />
         <div className="w-full mt-8 flex flex-row justify-between items-center">
           <span className="text-xl font-bold text-indigo-600">
@@ -157,8 +160,9 @@ const ProfileContainer = ({
                     src={profileGame.imageUrl}
                     alt="maple_profile_image"
                   />
-                  {/* <span className="absolute top-2">{`${profileGame.name} - ${profileGame.job.split('/')[1]}`}</span> */}
-                  <span className="absolute bottom-0">{`소스 이미지`}</span>
+                  <span className="absolute top-2">{`${profileGame.name} - ${
+                    profileGame?.job?.split("/")[1]
+                  }`}</span>
                 </div>
                 <div className="py-2 ml-4 flex flex-col items-center">
                   <div className="flex flex-row justify-center items-center space-x-2">
@@ -198,14 +202,14 @@ const ProfileContainer = ({
                       - 원본 캐릭터와 다른 색상을 선택하면 정확도와 인식률이
                       대폭 하락합니다.
                     </span>
-                    <div className="mt-4">
+                    {/* <div className="mt-4">
                       <span className="text-sm">의상 선택 : </span>
                       <DropdownMenu
                         menus={cloths}
                         selected={selectedCloth}
                         onClick={handleCloth}
                       />
-                    </div>
+                    </div> */}
                   </div>
 
                   <button
@@ -220,20 +224,6 @@ const ProfileContainer = ({
           </>
         </Modal>
       </ContentsLayout>
-      <footer className="border w-full h-20 absolute bottom-0 pl-20 py-4">
-        <span className="text-xs text-slate-500">
-          GAMECARD.GG is not associated with NEXON Korea.
-        </span>
-        <br></br>
-        <span className="text-xs text-slate-500">
-          GAMECARD.GG is not associated with Smilegate RPG & Smilegate Stove.
-        </span>
-        <br></br>
-        <span className="text-xs text-slate-500">
-          Games metadata is powered by IGDB.com.
-        </span>
-        
-      </footer>
     </DefaultLayout>
   );
 
@@ -366,12 +356,12 @@ const ProfileContainer = ({
     }
   }
 
-  function handleHairColor(color: string) {
-    setHairColor(color);
+  function handleHairColor(color: { label: string; value: string }) {
+    setHairColor(color.label);
   }
 
-  function handleEyesColor(color: string) {
-    setEyesColor(color);
+  function handleEyesColor(color: { label: string; value: string }) {
+    setEyesColor(color.label);
   }
 
   function handleCloth(cloth: string) {
@@ -394,18 +384,25 @@ const ProfileContainer = ({
       return;
     }
 
-
     if (typeof wait === "number") {
       window.alert(`${wait}초 후에 시도해주세요`);
       return;
     }
 
+    const _hairColor = colorOptions.filter(
+      (menu) => menu.label === hairColor
+    )[0];
+
+    const _eyesColor = colorOptions.filter(
+      (menu) => menu.label === eyesColor
+    )[0];
+
     const params: IAiImageInput = {
       id: userId,
       gameName: selectedProfileGame,
       gender: aiGender,
-      hairColor,
-      eyesColor,
+      hairColor: _hairColor?.value,
+      eyesColor: _eyesColor?.value,
       token: authToken,
     };
 
@@ -443,28 +440,44 @@ const ProfileContainer = ({
     };
 
     const response = await getAiImageUrl(params);
+    // console.log(response);
 
     const imageParams: IImageUrlInput = {
       id: userId,
       gameName: selectedProfileGame,
       authToken,
-      imageIndex: gallery.indexOf(null),
+      imageIndex:
+        gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null),
       imageUrl: response.url,
     };
 
     const responseImageUrl = await addImageWithUrl(imageParams);
+    console.log(
+      gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null),
+      gallery.length,
+      responseImageUrl
+    );
 
     if (responseImageUrl?.games) {
-      const newGrallery = gallery.map((image, index) => {
-        if (index === gallery.indexOf(null)) {
-          return selectedProfileGame === "maplestory"
+      if (gallery.indexOf(null) === -1) {
+        const newGrallery =
+          selectedProfileGame === "maplestory"
             ? responseImageUrl.games.maplestory.gallery[0]
             : responseImageUrl.games.lostark.gallery[0];
-        }
-        return image;
-      });
 
-      setGallery(newGrallery);
+        setGallery([...gallery, newGrallery]);
+      } else {
+        const newGrallery = gallery.map((image, index) => {
+          if (index === gallery.indexOf(null)) {
+            return selectedProfileGame === "maplestory"
+              ? responseImageUrl.games.maplestory.gallery[0]
+              : responseImageUrl.games.lostark.gallery[0];
+          }
+          return image;
+        });
+
+        setGallery(newGrallery);
+      }
 
       const newUserProfile: IProfile = await getProfileById({
         id: userId,
@@ -485,6 +498,29 @@ const ProfileContainer = ({
 
   function handleProfileGame(game: ServicedGames) {
     setSelectedProfileGame(game);
+  }
+
+  async function addGameCharacter(
+    profile: IProfile,
+    seletedGame: string,
+    gameUserName: string,
+    token: string
+  ) {
+    if (!userId || !token) return;
+    const response = await requestAddGame({
+      id: profile.id,
+      gameName: seletedGame,
+      gameUser: gameUserName,
+      authToken: token,
+    });
+
+    const newUserProfile: IProfile = await getProfileById({
+      id: userId,
+    });
+
+    setUserProfile(newUserProfile);
+
+    return response;
   }
 };
 
