@@ -23,6 +23,7 @@ const ImageList: React.FC<Props> = ({
 }) => {
   const [selectedImage, setSelectedImage] = React.useState("");
   const [modal, setModal] = React.useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState(null);
 
   return (
     <div
@@ -35,14 +36,14 @@ const ImageList: React.FC<Props> = ({
         <div key={index}>
           {!image ? (
             <label
-              htmlFor="thumbnail_update"
+              // htmlFor="thumbnail_update"
               className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer"
             >
               <AiOutlinePlus />
               {typeof uploadImage === "function" && (
                 <input
                   className="hidden"
-                  id="thumbnail_update"
+                  // id="thumbnail_update"
                   type="file"
                   multiple={false}
                   onChange={(event) => uploadImage(event, index)}
@@ -94,6 +95,8 @@ const ImageList: React.FC<Props> = ({
       </Modal>
     </div>
   );
+
+  function handleUploadImage() {}
 
   function deleteImage(imageIndex: number) {
     return () => {

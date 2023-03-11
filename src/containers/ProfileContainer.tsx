@@ -32,6 +32,7 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { IMapleInfoResponse, ServicedGames } from "@/types/Game";
 import { getMapleInfo } from "@/apis/game";
 import { Nullable } from "@/utils/utileTypes";
+import { getProfileById } from "@/apis/profile";
 
 const colorOptions = [
   "black",
@@ -56,22 +57,18 @@ type Props = {
   authToken?: string;
 };
 const ProfileContainer = ({
-  userProfile,
+  userProfile: _userProfile,
   authToken,
   userId,
   loginedUserId,
 }: Props) => {
+  const [userProfile, setUserProfile] = React.useState(_userProfile);
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
   const maleCloths = Object.keys(maleClothMap);
 
-  const [mapleInfo, setMapleInfo] =
-    React.useState<Nullable<IMapleInfoResponse>>();
-
   const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
-
-  // const [aiNewImage, setAiNewImage] = React.useState("");
 
   const [aiGender, setAiGender] = React.useState("boy");
   const [eyesColor, setEyesColor] = React.useState("black");
@@ -121,7 +118,7 @@ const ProfileContainer = ({
           <span className="text-xl font-bold text-indigo-600">
             Gallery - {gallery.length}/21
           </span>
-          {loginedUserId === userProfile?.id && (
+          {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2">
               <div
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
@@ -249,6 +246,12 @@ const ProfileContainer = ({
     });
 
     setGallery(newGrallery);
+
+    const newUserProfile: IProfile = await getProfileById({
+      id: userId,
+    });
+
+    setUserProfile(newUserProfile);
   }
 
   async function requestAddImage(
@@ -313,6 +316,12 @@ const ProfileContainer = ({
               setGallery(newGrallery);
             }
           }
+
+          const newUserProfile: IProfile = await getProfileById({
+            id: userId,
+          });
+
+          setUserProfile(newUserProfile);
         }
       };
     }
@@ -321,7 +330,6 @@ const ProfileContainer = ({
   function resetState() {
     setEyesColor("");
     setHairColor("");
-    setMapleInfo(null);
   }
 
   function toggleModal() {
@@ -374,19 +382,16 @@ const ProfileContainer = ({
 
     const params: IAiImageInput = {
       id: userId,
-      // gameUser: profileGame?.name,
       gameName: selectedProfileGame,
       gender: aiGender,
       hairColor,
       eyesColor,
-      // cloth: selectedCloth,
       token: authToken,
     };
 
     setLoading(true);
 
     const response: IAiImageResponse = await createAiImage(params);
-    console.log(response);
 
     if (response) {
       setLoading(false);
@@ -440,6 +445,12 @@ const ProfileContainer = ({
       });
 
       setGallery(newGrallery);
+
+      const newUserProfile: IProfile = await getProfileById({
+        id: userId,
+      });
+
+      setUserProfile(newUserProfile);
 
       const removeUrlParams: IRemoveImageUrlInput = {
         id: userId,

@@ -26,7 +26,9 @@ const Header: React.FC<Props> = ({ className, profile }) => {
         className
       )}
     >
-      <h1 className="text-lg font-bold text-indigo-600">Game-Card</h1>
+      <h1 className="text-lg font-bold text-indigo-600">
+        <Link href="/">Game-Card</Link>
+      </h1>
       {userId && profile ? (
         <Profile profile={profile} />
       ) : (

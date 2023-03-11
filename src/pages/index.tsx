@@ -41,11 +41,11 @@ HomePage.getInitialProps = async (ctx: NextPageContext) => {
       id: userId,
     });
 
-    if (userProfile?.Err === "NotExistUser" && ctx.res) {
-      ctx.res.statusCode = 404;
-      ctx.res.end("Not found");
-      return;
-    }
+    // if (userProfile?.Err === "NotExistUser" && ctx.res) {
+    //   ctx.res.statusCode = 404;
+    //   ctx.res.end("Not found");
+    //   return;
+    // }
 
     return {
       profile: userProfile,

@@ -112,7 +112,7 @@ const LoginContainer: React.FC = ({}) => {
     setCookie("authToken", authToken);
     setCookie("userId", id);
 
-    router.push("/");
+    router.push(`/profile/${id}`);
   }
 
   async function onRegist() {

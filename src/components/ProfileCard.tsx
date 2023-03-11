@@ -56,30 +56,56 @@ const ProfileCard: React.FC<Props> = ({
               <h1 className="text-xl font-semibold text-indigo-600">{`게임 캐릭터 등록 하기! ->`}</h1>
             </div>
           ) : (
-            selectedProfileGame === "maplestory" && (
-              <div className="flex justify-between items-end">
-                <div className="w-fit h-fit bg-slate-200 rounded py-1 px-3 text-white flex items-center space-x-1">
-                  <span className="text-lg font-semibold flex items-center justify-center text-indigo-500 capitalize">
-                    # {selectedProfileGame}
-                  </span>
-                  <span className="text-sm text-indigo-500">
-                    {" "}
-                    - Lv {profileGame?.level}
-                  </span>
+            <>
+              {selectedProfileGame === "maplestory" && (
+                <div className="flex justify-between items-end">
+                  <div className="w-fit h-fit bg-slate-200 rounded py-1 px-3 text-white flex items-center space-x-1">
+                    <span className="text-lg font-semibold flex items-center justify-center text-indigo-500 capitalize">
+                      # {selectedProfileGame}
+                    </span>
+                    <span className="text-sm text-indigo-500">
+                      {" "}
+                      - Lv {profileGame?.level}
+                    </span>
+                  </div>
+                  <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
+                    <span className="mt-2 text-xs">
+                      {`<${profileGame.world} - ${profileGame.job}>`}
+                    </span>
+                    <img
+                      className="bg-contain absolute"
+                      src={profileGame.imageUrl}
+                      alt="maplestory user image"
+                    />
+                    <span className="mb-2 text-xs">{`<${profileGame.name}>`}</span>
+                  </div>
                 </div>
-                <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
-                  <span className="mt-2 text-xs">
-                    {`<${profileGame.world} - ${profileGame.job}>`}
-                  </span>
-                  <img
-                    className="bg-contain absolute"
-                    src={profileGame.imageUrl}
-                    alt="maplestory user image"
-                  />
-                  <span className="mb-2 text-xs">{`<${profileGame.name}>`}</span>
+              )}
+              {selectedProfileGame === "lostark" && (
+                <div className="flex justify-between items-end">
+                  <div className="w-fit h-fit bg-slate-200 rounded py-1 px-3 text-white flex items-center space-x-1">
+                    <span className="text-lg font-semibold flex items-center justify-center text-indigo-500 capitalize">
+                      # {selectedProfileGame}
+                    </span>
+                    <span className="text-sm text-indigo-500">
+                      {" "}
+                      - Lv {profileGame?.level}
+                    </span>
+                  </div>
+                  <div className="w-40 h-50 border relative bg-white rounded flex flex-col justify-between items-center">
+                    <span className="my-2 text-xs">
+                      {`<${profileGame.world} - ${profileGame.job}>`}
+                    </span>
+                    <img
+                      className="bg-contain"
+                      src={profileGame.imageUrl}
+                      alt="maplestory user image"
+                    />
+                    <span className="my-2 text-xs">{`<${profileGame.name}>`}</span>
+                  </div>
                 </div>
-              </div>
-            )
+              )}
+            </>
           )}
         </div>
         <div className="w-20 h-[90%] rounded-r-xl shadow-xl justify-evenly items-center bg-slate-100 flex flex-col">

@@ -12,7 +12,7 @@ type Props = {
 const ListItem: React.FC<Props> = ({ className, item, type }) => {
   return (
     <>
-      {type === ServicedGames.LOL && <Lol item={item} />}
+      {/* {type === ServicedGames.LOL && <Lol item={item} />} */}
       {type === ServicedGames.MapleStory && <MapleStory item={item} />}
     </>
   );
