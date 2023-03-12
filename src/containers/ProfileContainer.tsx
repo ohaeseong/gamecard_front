@@ -71,12 +71,15 @@ const ProfileContainer = ({
 
   const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
+  const [openGeneratedModal, setGeneratedOpenModal] = React.useState(false);
 
   const [aiGender, setAiGender] = React.useState("boy");
   const [eyesColor, setEyesColor] = React.useState("black");
   const [hairColor, setHairColor] = React.useState("black");
   const [cloths, setCloths] = React.useState(maleCloths);
   const [selectedCloth, setSelectedCloth] = React.useState("");
+
+  const [genImageUrl, setGenImageUrl] = React.useState("");
 
   const [wait, setWait] = React.useState<Nullable<number>>();
 
@@ -119,7 +122,17 @@ const ProfileContainer = ({
         />
         <div className="w-full mt-8 flex flex-row justify-between items-center">
           <span className="text-xl font-bold text-indigo-600">
-            갤러리 ({gallery.length}/21)
+            갤러리
+          </span>
+          <span className="text-xs font-bold text-indigo-600">
+          
+          <button
+            className="p-2 py-2 bg-indigo-500 text-white w-full rounded"
+            onClick={handleDynamicUrl}
+          >
+            Dynamic Url: i.gamecard.gg/{profileGame.gameName}?id={userProfile.id}
+          </button>
+
           </span>
           {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2">
@@ -152,7 +165,7 @@ const ProfileContainer = ({
           closeModal={toggleModal}
         >
           <>
-            {selectedProfileGame && (
+            {(
               <div className="flex flex-row justify-between">
                 <div className="w-56 relative flex flex-col items-center">
                   <img
@@ -223,6 +236,45 @@ const ProfileContainer = ({
             )}
           </>
         </Modal>
+
+        <Modal
+          className="w-[300px]"
+          title="생성된 이미지를 확인하세요"
+          isOpen={openGeneratedModal}
+          closeModal={toggleGeneratedModal}
+        >
+          <>
+            {genImageUrl != "" && (
+              
+              <div className="">
+                <div className="w-56 items-center">
+                  <img
+                    className="object-contain"
+                    src={genImageUrl}
+                    alt="maple_profile_image"
+                  />
+                  <div className="flex">
+                  <span>
+                    <button
+                      className="p-20 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                      onClick={saveGeneratedImage}
+                    >
+                      {"저장하기"}
+                    </button>
+                    <button
+                      className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                      onClick={deleteGeneratedImage}
+                    >
+                      {"삭제하기"}
+                    </button>
+                  </span>
+                </div>
+                </div>
+                
+              </div>
+            )}
+          </>
+        </Modal>
       </ContentsLayout>
     </DefaultLayout>
   );
@@ -249,13 +301,14 @@ const ProfileContainer = ({
       return image;
     });
 
+
     setGallery(newGrallery);
 
-    const newUserProfile: IProfile = await getProfileById({
-      id: userId,
-    });
+    // const newUserProfile: IProfile = await getProfileById({
+    //   id: userId,
+    // });
 
-    setUserProfile(newUserProfile);
+    // setUserProfile(newUserProfile);
   }
 
   async function requestAddImage(
@@ -345,6 +398,16 @@ const ProfileContainer = ({
     resetState();
   }
 
+  function toggleGeneratedModal() {
+    if (!profileGame || !selectedProfileGame) {
+      window.alert("캐릭터를 등록해주세요");
+      return;
+    }
+    setGeneratedOpenModal(!openGeneratedModal);
+    resetState();
+  }
+
+
   function handleAiGender(event: React.ChangeEvent<HTMLInputElement>) {
     setAiGender(event.target.value);
     setSelectedCloth("");
@@ -430,6 +493,65 @@ const ProfileContainer = ({
     toggleModal();
   }
 
+  async function deleteGeneratedImage() {
+    if (!userId || !authToken) return;
+
+       const removeUrlParams: IRemoveImageUrlInput = {
+        id: userId,
+        gameName: selectedProfileGame,
+        authToken,
+      };
+
+      await removeAiImageUrl(removeUrlParams);
+      setGenImageUrl("");
+      toggleGeneratedModal();
+      setWait(null);
+  }
+
+  async function saveGeneratedImage() {
+    if (!authToken || !userId) {
+      window.alert("로그인 후 이용해 주세요");
+      return;
+    }
+
+    const imageIndex = gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null);
+
+    const imageParams: IImageUrlInput = {
+      id: userId,
+      gameName: selectedProfileGame,
+      authToken,
+      imageIndex,
+      imageUrl: genImageUrl,
+    };
+
+    const responseImageUrl = await addImageWithUrl(imageParams);
+    
+    if (responseImageUrl?.games) {
+      const newGralleryImage = responseImageUrl.games[`${selectedProfileGame}`].gallery[0];
+
+      gallery[imageIndex] = newGralleryImage;
+      setGallery(gallery);
+    } else {
+      // send invalid index = return {}
+      const newUserProfile: IProfile = await getProfileById({
+        id: userId,
+      });
+
+      setUserProfile(newUserProfile);
+    }
+
+    const removeUrlParams: IRemoveImageUrlInput = {
+      id: userId,
+      gameName: selectedProfileGame,
+      authToken,
+    };
+
+    await removeAiImageUrl(removeUrlParams);
+    setGenImageUrl("");
+    toggleGeneratedModal();
+    setWait(null);
+  }
+
   async function requestGetAiImageUrl() {
     if (!userId || !authToken) return;
 
@@ -440,58 +562,37 @@ const ProfileContainer = ({
     };
 
     const response = await getAiImageUrl(params);
+    if (response.message) window.alert(response.message);
 
-    const imageParams: IImageUrlInput = {
-      id: userId,
-      gameName: selectedProfileGame,
-      authToken,
-      imageIndex:
-        gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null),
-      imageUrl: response.url,
-    };
+    if (response.wait === -1) {
+      window.alert("서버에서 그림을 만들고 있어요. 조금만 기다려 주세요.");
+      return;
+    }
+    if (typeof response.wait === "number") {
+      window.alert(`${wait}초 후에 시도해주세요`);
+      return;
+    }
 
-    const responseImageUrl = await addImageWithUrl(imageParams);
-
-    if (responseImageUrl?.games) {
-      if (gallery.indexOf(null) === -1) {
-        const newGrallery =
-          selectedProfileGame === "maplestory"
-            ? responseImageUrl.games.maplestory.gallery[0]
-            : responseImageUrl.games.lostark.gallery[0];
-
-        setGallery([...gallery, newGrallery]);
-      } else {
-        const newGrallery = gallery.map((image, index) => {
-          if (index === gallery.indexOf(null)) {
-            return selectedProfileGame === "maplestory"
-              ? responseImageUrl.games.maplestory.gallery[0]
-              : responseImageUrl.games.lostark.gallery[0];
-          }
-          return image;
-        });
-
-        setGallery(newGrallery);
-      }
-
-      const newUserProfile: IProfile = await getProfileById({
-        id: userId,
-      });
-
-      setUserProfile(newUserProfile);
-
-      const removeUrlParams: IRemoveImageUrlInput = {
-        id: userId,
-        gameName: selectedProfileGame,
-        authToken,
-      };
-
-      await removeAiImageUrl(removeUrlParams);
-      setWait(null);
+    if (response.url != null) {
+      setGenImageUrl(response.url);
+      toggleGeneratedModal();
     }
   }
 
   function handleProfileGame(game: ServicedGames) {
     setSelectedProfileGame(game);
+  }
+
+  async function handleDynamicUrl() {
+    const url = `https://i.gamecard.gg/${profileGame.gameName}?id=${userProfile.id}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      alert('클립보드에 링크가 복사되었습니다.');
+    } catch (e) {
+      alert('복사에 실패하였습니다');
+    }
+
   }
 
   async function addGameCharacter(
