@@ -9,7 +9,7 @@ export function getCookieFromContext<T>(
   defaultValue: T
 ): T | string {
   const value = safelyGet(() => cookies(ctx)[key]);
-  console.log(value);
+  console.log(value, cookies(ctx), key);
 
   if (!value) return defaultValue;
 
