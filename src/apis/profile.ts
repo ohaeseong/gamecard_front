@@ -5,7 +5,7 @@ interface IProfileParams {
 }
 
 export function getProfileById({ id }: IProfileParams) {
-  const response = fetch(`${SERVER_URL}/dev/profile?id=${id}`, {
+  const response = fetch(`${SERVER_URL}/profile?id=${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

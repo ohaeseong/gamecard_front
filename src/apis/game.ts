@@ -1,7 +1,7 @@
 import { SERVER_URL } from ".";
 
 export function getGameList() {
-  const response = fetch(`${SERVER_URL}/dev/games`, {
+  const response = fetch(`${SERVER_URL}/games`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ interface IGameInput {
 
 export function requestAddGame(variables: IGameInput) {
   const response = fetch(
-    ` https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com/dev/game`,
+    ` https://img.gamecard.gg/game`,
     {
       method: "PUT",
       headers: {
@@ -40,7 +40,7 @@ export function requestAddGame(variables: IGameInput) {
 }
 
 export function getMapleInfo({ name }: { name: string }) {
-  const response = fetch(`${SERVER_URL}/dev/maple/promote`, {
+  const response = fetch(`${SERVER_URL}/maple/promote`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

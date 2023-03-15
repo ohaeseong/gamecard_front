@@ -6,7 +6,7 @@ interface IAccountInput {
 }
 
 export function createAccount({ id, pw }: IAccountInput) {
-  const response = fetch(`${SERVER_URL}/dev/account`, {
+  const response = fetch(`${SERVER_URL}/account`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export function createAccount({ id, pw }: IAccountInput) {
 }
 
 export async function login({ id, pw }: IAccountInput) {
-  const response = await fetch(`${SERVER_URL}/dev/login`, {
+  const response = await fetch(`${SERVER_URL}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

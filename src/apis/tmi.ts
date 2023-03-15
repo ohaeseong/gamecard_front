@@ -1,7 +1,7 @@
 import { SERVER_URL } from ".";
 
 export function getTMIList() {
-  const response = fetch(`${SERVER_URL}/dev/tmis`, {
+  const response = fetch(`${SERVER_URL}/tmis`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ interface ITmiInput {
 }
 
 export function requestAddTmi(variables: ITmiInput) {
-  const response = fetch(`${SERVER_URL}/dev/tmi`, {
+  const response = fetch(`${SERVER_URL}/tmi`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +45,7 @@ interface ITmiInputUpdate {
 }
 
 export function requestUpdateTmi(variables: ITmiInputUpdate) {
-  const response = fetch(`${SERVER_URL}/dev/tmi`, {
+  const response = fetch(`${SERVER_URL}/tmi`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

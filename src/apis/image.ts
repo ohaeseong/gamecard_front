@@ -9,7 +9,7 @@ export interface IImageInput {
 }
 
 export function addImage(variables: IImageInput) {
-  const response = fetch(`${SERVER_URL}/dev/image`, {
+  const response = fetch(`${SERVER_URL}/image`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export interface IImageUrlInput {
 }
 
 export function addImageWithUrl(variables: IImageUrlInput) {
-  const response = fetch(`${SERVER_URL}/dev/image/url`, {
+  const response = fetch(`${SERVER_URL}/image/url`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export interface IImageDelete {
 }
 
 export function removeImage(variables: IImageDelete) {
-  const response = fetch(`${SERVER_URL}/dev/image/delete`, {
+  const response = fetch(`${SERVER_URL}/image/delete`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export function removeImage(variables: IImageDelete) {
 //   "https://d19wdljbhh.execute-api.ap-northeast-2.amazonaws.com";
 
 const AI_IMAGE_SERVER_URL =
-  "https://v8apilr4m5.execute-api.ap-northeast-2.amazonaws.com";
+  "https://gen.gamecard.gg";
 
 export interface IAiImageInput {
   id: string;
@@ -98,7 +98,7 @@ export function createAiImage({
   // cloth,
   token,
 }: IAiImageInput) {
-  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen`, {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/gen`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export function createAiImage({
 }
 
 export function getLimit() {
-  const response = fetch(`${SERVER_URL}/dev/limit/promote`, {
+  const response = fetch(`${SERVER_URL}/limit/promote`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export interface IGetAiImageUrl {
 }
 
 export function getAiImageUrl({ id, gameName, authToken }: IGetAiImageUrl) {
-  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen/check`, {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/gen/check`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export interface IRemoveImageUrlInput {
 }
 
 export function removeAiImageUrl(variables: IRemoveImageUrlInput) {
-  const response = fetch(`${AI_IMAGE_SERVER_URL}/dep/gen/delete`, {
+  const response = fetch(`${AI_IMAGE_SERVER_URL}/gen/delete`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
