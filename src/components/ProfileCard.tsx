@@ -37,7 +37,6 @@ const ProfileCard: React.FC<Props> = ({
   const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  // const [profile, setProfile] = React.useState(_profile);
   const [gameUserName, setGameUserName] = React.useState("");
   const [seletedGame, setSeletedGame] =
     React.useState<Nullable<ServicedGames>>();
@@ -134,12 +133,14 @@ const ProfileCard: React.FC<Props> = ({
               />
             </div>
           ))}
-          <div
-            className="w-12 border border-slate-300 h-12 rounded flex justify-center items-center cursor-pointer"
-            onClick={toggleModal}
-          >
-            <AiOutlinePlus color="#808080" />
-          </div>
+          {games.length > 2 && (
+            <div
+              className="w-12 border border-slate-300 h-12 rounded flex justify-center items-center cursor-pointer"
+              onClick={toggleModal}
+            >
+              <AiOutlinePlus color="#808080" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -221,7 +222,6 @@ const ProfileCard: React.FC<Props> = ({
       return;
     }
 
-
     setLoading(true);
 
     const response = await addGameCharacter(
@@ -237,7 +237,7 @@ const ProfileCard: React.FC<Props> = ({
       }
 
       setLoading(false);
-      
+
       toggleModal();
       handleGame(seletedGame);
       handleProfileGame(seletedGame);

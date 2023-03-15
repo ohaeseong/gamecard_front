@@ -23,7 +23,6 @@ const ImageList: React.FC<Props> = ({
 }) => {
   const [selectedImage, setSelectedImage] = React.useState("");
   const [modal, setModal] = React.useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = React.useState(null);
 
   return (
     <div
@@ -35,15 +34,11 @@ const ImageList: React.FC<Props> = ({
       {images.map((image, index) => (
         <div key={index}>
           {!image ? (
-            <label
-              // htmlFor="thumbnail_update"
-              className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer"
-            >
+            <label className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer">
               <AiOutlinePlus />
               {typeof uploadImage === "function" && (
                 <input
                   className="hidden"
-                  // id="thumbnail_update"
                   type="file"
                   multiple={false}
                   onChange={(event) => uploadImage(event, index)}
@@ -78,7 +73,7 @@ const ImageList: React.FC<Props> = ({
           />
         </label>
       )}
-      <Modal title="Gallery" isOpen={modal} closeModal={toggleModal}>
+      <Modal title="갤러리" isOpen={modal} closeModal={toggleModal}>
         <img
           className="w-60 h-full object-contain border rounded cursor-pointer"
           src={selectedImage}

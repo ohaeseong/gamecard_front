@@ -33,6 +33,7 @@ import { IMapleInfoResponse, ServicedGames } from "@/types/Game";
 import { getMapleInfo, requestAddGame } from "@/apis/game";
 import { Nullable } from "@/utils/utileTypes";
 import { getProfileById } from "@/apis/profile";
+import classNames from "classnames";
 
 const colorOptions = [
   { label: "검정색", value: "black" },
@@ -83,6 +84,8 @@ const ProfileContainer = ({
 
   const [wait, setWait] = React.useState<Nullable<number>>();
 
+  const [tootip, setTooltip] = React.useState(false);
+
   const game = games.filter((game) => game.level);
 
   const [selectedProfileGame, setSelectedProfileGame] = React.useState(
@@ -121,19 +124,23 @@ const ProfileContainer = ({
           addGameCharacter={addGameCharacter}
         />
         <div className="w-full mt-8 flex flex-row justify-between items-center">
-          <span className="text-xl font-bold text-indigo-600">
-            갤러리
-          </span>
-          <span className="text-xs font-bold text-indigo-600">
-          
-          <button
-            className="p-2 py-2 bg-indigo-500 text-white w-full rounded"
-            onClick={handleDynamicUrl}
-          >
-            Dynamic Url: i.gamecard.gg/{profileGame.gameName}?id={userProfile.id}
-          </button>
+          <div className="flex space-x-2 items-center">
+            <span className="text-xl font-bold text-indigo-600">갤러리 - </span>
+            <span className="text-xs font-bold text-indigo-600 relative group">
+              <button
+                className="p-2 py-2 bg-indigo-500 text-white w-full rounded border"
+                onClick={handleDynamicUrl}
+              >
+                Dynamic Url: i.gamecard.gg/{profileGame.gameName}?id=
+                {userProfile.id}
+              </button>
 
-          </span>
+              <span className="absolute p-2 group-hover:block hidden w-64 top-0 bg-indigo-500 text-white rounded -right-[265px]">
+                해당 URL을 통해 내 갤러리에 저장된 사진 중 하나를 랜덤으로
+                보여줄 수 있습니다.
+              </span>
+            </span>
+          </div>
           {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2">
               <div
@@ -165,7 +172,7 @@ const ProfileContainer = ({
           closeModal={toggleModal}
         >
           <>
-            {(
+            {
               <div className="flex flex-row justify-between">
                 <div className="w-56 relative flex flex-col items-center">
                   <img
@@ -173,8 +180,12 @@ const ProfileContainer = ({
                     src={profileGame.imageUrl}
                     alt="maple_profile_image"
                   />
-                  <span className="absolute top-2">{`${profileGame.name} - ${
-                    profileGame?.job?.split("/")[1]
+                  <span
+                    className={classNames("absolute top-2", {
+                      "text-white": selectedProfileGame === "lostark",
+                    })}
+                  >{`${profileGame.name} - ${
+                    profileGame?.job?.split("/")[1] || profileGame?.job
                   }`}</span>
                 </div>
                 <div className="py-2 ml-4 flex flex-col items-center">
@@ -233,44 +244,38 @@ const ProfileContainer = ({
                   </button>
                 </div>
               </div>
-            )}
+            }
           </>
         </Modal>
 
         <Modal
-          className="w-[300px]"
           title="생성된 이미지를 확인하세요"
           isOpen={openGeneratedModal}
           closeModal={toggleGeneratedModal}
         >
           <>
             {genImageUrl != "" && (
-              
-              <div className="">
-                <div className="w-56 items-center">
-                  <img
-                    className="object-contain"
-                    src={genImageUrl}
-                    alt="maple_profile_image"
-                  />
-                  <div className="flex">
-                  <span>
-                    <button
-                      className="p-20 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
-                      onClick={saveGeneratedImage}
-                    >
-                      {"저장하기"}
-                    </button>
-                    <button
-                      className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
-                      onClick={deleteGeneratedImage}
-                    >
-                      {"삭제하기"}
-                    </button>
-                  </span>
+              <div className="w-full flex justify-center items-center flex-col">
+                <img
+                  className="object-contain"
+                  src={genImageUrl}
+                  alt="maple_profile_image"
+                />
+
+                <div className="flex flex-row space-x-2 w-full">
+                  <button
+                    className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                    onClick={saveGeneratedImage}
+                  >
+                    저장하기
+                  </button>
+                  <button
+                    className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                    onClick={deleteGeneratedImage}
+                  >
+                    삭제하기
+                  </button>
                 </div>
-                </div>
-                
               </div>
             )}
           </>
@@ -300,7 +305,6 @@ const ProfileContainer = ({
       }
       return image;
     });
-
 
     setGallery(newGrallery);
 
@@ -407,7 +411,6 @@ const ProfileContainer = ({
     resetState();
   }
 
-
   function handleAiGender(event: React.ChangeEvent<HTMLInputElement>) {
     setAiGender(event.target.value);
     setSelectedCloth("");
@@ -496,16 +499,16 @@ const ProfileContainer = ({
   async function deleteGeneratedImage() {
     if (!userId || !authToken) return;
 
-       const removeUrlParams: IRemoveImageUrlInput = {
-        id: userId,
-        gameName: selectedProfileGame,
-        authToken,
-      };
+    const removeUrlParams: IRemoveImageUrlInput = {
+      id: userId,
+      gameName: selectedProfileGame,
+      authToken,
+    };
 
-      await removeAiImageUrl(removeUrlParams);
-      setGenImageUrl("");
-      toggleGeneratedModal();
-      setWait(null);
+    await removeAiImageUrl(removeUrlParams);
+    setGenImageUrl("");
+    toggleGeneratedModal();
+    setWait(null);
   }
 
   async function saveGeneratedImage() {
@@ -514,7 +517,8 @@ const ProfileContainer = ({
       return;
     }
 
-    const imageIndex = gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null);
+    const imageIndex =
+      gallery.indexOf(null) === -1 ? gallery.length : gallery.indexOf(null);
 
     const imageParams: IImageUrlInput = {
       id: userId,
@@ -525,9 +529,10 @@ const ProfileContainer = ({
     };
 
     const responseImageUrl = await addImageWithUrl(imageParams);
-    
+
     if (responseImageUrl?.games) {
-      const newGralleryImage = responseImageUrl.games[`${selectedProfileGame}`].gallery[0];
+      const newGralleryImage =
+        responseImageUrl.games[`${selectedProfileGame}`].gallery[0];
 
       gallery[imageIndex] = newGralleryImage;
       setGallery(gallery);
@@ -577,6 +582,11 @@ const ProfileContainer = ({
       setGenImageUrl(response.url);
       toggleGeneratedModal();
     }
+
+    if (response?.Err === "이미지 생성을 해주세요") {
+      window.alert("이미지를 먼저 생성해 주세요.");
+      return;
+    }
   }
 
   function handleProfileGame(game: ServicedGames) {
@@ -588,11 +598,10 @@ const ProfileContainer = ({
 
     try {
       await navigator.clipboard.writeText(url);
-      alert('클립보드에 링크가 복사되었습니다.');
+      alert("클립보드에 링크가 복사되었습니다.");
     } catch (e) {
-      alert('복사에 실패하였습니다');
+      alert("복사에 실패하였습니다");
     }
-
   }
 
   async function addGameCharacter(
