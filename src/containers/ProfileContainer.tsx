@@ -537,7 +537,6 @@ const ProfileContainer = ({
       gallery[imageIndex] = newGralleryImage;
       setGallery(gallery);
     } else {
-      // send invalid index = return {}
       const newUserProfile: IProfile = await getProfileById({
         id: userId,
       });
