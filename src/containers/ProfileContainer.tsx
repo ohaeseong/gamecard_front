@@ -34,6 +34,8 @@ import { getMapleInfo, requestAddGame } from "@/apis/game";
 import { Nullable } from "@/utils/utileTypes";
 import { getProfileById } from "@/apis/profile";
 import classNames from "classnames";
+import { deleteCookie } from "@/hooks/cookie";
+import { useRouter } from "next/router";
 
 const colorOptions = [
   { label: "검정색", value: "black" },
@@ -65,6 +67,8 @@ const ProfileContainer = ({
   userId,
   loginedUserId,
 }: Props) => {
+  const router = useRouter();
+
   const [userProfile, setUserProfile] = React.useState(_userProfile);
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
@@ -83,8 +87,6 @@ const ProfileContainer = ({
   const [genImageUrl, setGenImageUrl] = React.useState("");
 
   const [wait, setWait] = React.useState<Nullable<number>>();
-
-  const [tootip, setTooltip] = React.useState(false);
 
   const game = games.filter((game) => game.level);
 
@@ -114,7 +116,7 @@ const ProfileContainer = ({
 
   return (
     <DefaultLayout profile={logindUserProfile}>
-      <ContentsLayout>
+      <ContentsLayout className="">
         <ProfileCard
           games={games}
           token={authToken}
@@ -131,7 +133,7 @@ const ProfileContainer = ({
                 className="p-2 py-2 bg-indigo-500 text-white w-full rounded border"
                 onClick={handleDynamicUrl}
               >
-                Dynamic Url: i.gamecard.gg/{profileGame.gameName}?id=
+                Dynamic Url: i.gamecard.gg/{profileGame?.gameName}?id=
                 {userProfile.id}
               </button>
 
@@ -177,14 +179,14 @@ const ProfileContainer = ({
                 <div className="w-56 relative flex flex-col items-center">
                   <img
                     className="object-contain w-56 h-56"
-                    src={profileGame.imageUrl}
+                    src={profileGame?.imageUrl}
                     alt="maple_profile_image"
                   />
                   <span
                     className={classNames("absolute top-2", {
                       "text-white": selectedProfileGame === "lostark",
                     })}
-                  >{`${profileGame.name} - ${
+                  >{`${profileGame?.name} - ${
                     profileGame?.job?.split("/")[1] || profileGame?.job
                   }`}</span>
                 </div>
@@ -297,7 +299,16 @@ const ProfileContainer = ({
       imageIndex,
     };
 
-    await removeImage(params);
+    const response = await removeImage(params);
+
+    if (response?.Err === "InvalidAccess") {
+      window.alert("다시 로그인 해주세요.");
+
+      deleteCookie("userId");
+      deleteCookie("authToken");
+      router.reload();
+      return;
+    }
 
     const newGrallery = gallery.map((image, index) => {
       if (index === imageIndex) {
@@ -307,12 +318,6 @@ const ProfileContainer = ({
     });
 
     setGallery(newGrallery);
-
-    // const newUserProfile: IProfile = await getProfileById({
-    //   id: userId,
-    // });
-
-    // setUserProfile(newUserProfile);
   }
 
   async function requestAddImage(
@@ -320,7 +325,11 @@ const ProfileContainer = ({
     imageIndex?: number
   ) {
     if (!userId || !authToken || authToken === "undefined") {
-      await window.alert("로그인 후 이용가능 합니다!");
+      window.alert("로그인 후 이용가능 합니다!");
+      return;
+    }
+    if (!profileGame || !selectedProfileGame) {
+      window.alert("게임 등록을 먼저 해주세요!");
       return;
     }
 
@@ -345,6 +354,19 @@ const ProfileContainer = ({
 
           if (response?.Err?.code === "ConditionalCheckFailedException") {
             window.alert("다시 로그인 해주세요.");
+
+            deleteCookie("userId");
+            deleteCookie("authToken");
+            router.reload();
+            return;
+          }
+
+          if (response?.Err?.code === "InvalidAccess") {
+            window.alert("다시 로그인 해주세요.");
+
+            deleteCookie("userId");
+            deleteCookie("authToken");
+            router.reload();
             return;
           }
 
@@ -480,6 +502,15 @@ const ProfileContainer = ({
       setLoading(false);
     }
 
+    if (response?.Err === "InvalidAccess") {
+      window.alert("다시 로그인 해주세요.");
+
+      deleteCookie("userId");
+      deleteCookie("authToken");
+      router.reload();
+      return;
+    }
+
     if (response?.Err === "DailyLimit") {
       window.alert(
         "오늘의 무료 이미지 생성 횟수가 모두 소진되었습니다. 아래 어플에서 더 많은 기능을 사용해볼 수 있습니다!"
@@ -529,6 +560,15 @@ const ProfileContainer = ({
     };
 
     const responseImageUrl = await addImageWithUrl(imageParams);
+
+    if (responseImageUrl?.Err?.code === "InvalidAccess") {
+      window.alert("다시 로그인 해주세요.");
+
+      deleteCookie("userId");
+      deleteCookie("authToken");
+      router.reload();
+      return;
+    }
 
     if (responseImageUrl?.games) {
       const newGralleryImage =
@@ -616,6 +656,15 @@ const ProfileContainer = ({
       gameUser: gameUserName,
       authToken: token,
     });
+
+    if (response?.Err === "InvalidAccess") {
+      window.alert("다시 로그인 해주세요.");
+
+      deleteCookie("userId");
+      deleteCookie("authToken");
+      router.reload();
+      return;
+    }
 
     const newUserProfile: IProfile = await getProfileById({
       id: userId,

@@ -1,4 +1,5 @@
 import { getProfileById } from "@/apis/profile";
+import HeadMeta from "@/components/HeadMeta";
 import ProfileContainer from "@/containers/ProfileContainer";
 import { IProfile } from "@/types/Account";
 import { getCookieFromContext } from "@/utils/cookie";
@@ -18,14 +19,19 @@ const ProfilePage = ({
   authToken,
   loginedUserId,
 }: Props) => {
+  console.log(userProfile);
+
   return (
-    <ProfileContainer
-      userProfile={userProfile}
-      logindUserProfile={logindUserProfile}
-      userId={userId}
-      loginedUserId={loginedUserId}
-      authToken={authToken}
-    />
+    <>
+      <HeadMeta />
+      <ProfileContainer
+        userProfile={userProfile}
+        logindUserProfile={logindUserProfile}
+        userId={userId}
+        loginedUserId={loginedUserId}
+        authToken={authToken}
+      />
+    </>
   );
 };
 

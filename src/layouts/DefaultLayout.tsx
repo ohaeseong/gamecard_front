@@ -21,7 +21,7 @@ const DefaultLayout: React.FC<Props> = ({ children, profile }) => {
         profile={profile}
       />
       <div className="flex flex-col h-full justify-between">
-        <div>
+        <div className="w-full flex justify-center">
           {/* <Navigation className="mt-8 lg:block hidden" /> */}
           {children}
         </div>

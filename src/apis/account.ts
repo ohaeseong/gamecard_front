@@ -14,6 +14,7 @@ export function createAccount({ id, pw }: IAccountInput) {
     body: JSON.stringify({
       id,
       pw,
+      tickets: 10,
     }),
   })
     .then((response) => response.json())

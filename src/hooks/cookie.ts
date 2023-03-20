@@ -28,3 +28,7 @@ export function setCookie(key: string, value: string) {
     secure: true,
   });
 }
+
+export function deleteCookie(key: string) {
+  Cookies.remove(key);
+}

@@ -5,7 +5,6 @@ import { IListItem } from "./List";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IProfile } from "@/types/Account";
 import Modal from "./Modal";
-import { requestAddGame } from "@/apis/game";
 import { ServicedGames } from "@/types/Game";
 import { Nullable } from "@/utils/utileTypes";
 import Image from "next/image";
@@ -75,7 +74,7 @@ const ProfileCard: React.FC<Props> = ({
                       - Lv {profileGame?.level}
                     </span>
                   </div>
-                  <div className="w-40 h-40 border relative bg-white rounded flex flex-col justify-between items-center">
+                  <div className="w-40 h-40 relative bg-white rounded flex flex-col justify-between items-center">
                     <span className="mt-2 text-xs">
                       {`${profileGame.world} - ${
                         profileGame.job.split("/")[1]
@@ -101,7 +100,7 @@ const ProfileCard: React.FC<Props> = ({
                       - {profileGame?.level}
                     </span>
                   </div>
-                  <div className="w-40 h-50 border relative bg-white rounded flex flex-col justify-between items-center">
+                  <div className="w-40 h-50 relative bg-white rounded flex flex-col justify-between items-center">
                     <span className="my-2 text-xs">
                       {`${profileGame.world} - ${profileGame.job}`}
                     </span>
@@ -133,7 +132,7 @@ const ProfileCard: React.FC<Props> = ({
               />
             </div>
           ))}
-          {games.length > 2 && (
+          {games.length < 2 && (
             <div
               className="w-12 border border-slate-300 h-12 rounded flex justify-center items-center cursor-pointer"
               onClick={toggleModal}
@@ -232,11 +231,11 @@ const ProfileCard: React.FC<Props> = ({
     );
 
     if (response) {
+      setLoading(false);
       if (!response.name) {
         window.alert("캐릭터를 찾지 못했습니다.");
+        return;
       }
-
-      setLoading(false);
 
       toggleModal();
       handleGame(seletedGame);

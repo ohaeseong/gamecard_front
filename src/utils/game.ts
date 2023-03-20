@@ -8,7 +8,7 @@ export function getGameAbilityFromProfile<T>(games: IGames) {
       return {
         gameName,
         ...games[gameName],
-      } as T;
+      } as unknown as T;
     });
 
   return values;

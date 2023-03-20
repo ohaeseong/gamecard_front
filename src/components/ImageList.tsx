@@ -91,8 +91,6 @@ const ImageList: React.FC<Props> = ({
     </div>
   );
 
-  function handleUploadImage() {}
-
   function deleteImage(imageIndex: number) {
     return () => {
       if (typeof _deleteImage === "function") {

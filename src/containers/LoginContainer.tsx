@@ -127,6 +127,7 @@ const LoginContainer: React.FC = ({}) => {
     }
 
     const response: IResponseLogin = await createAccount({ id, pw });
+    console.log(response);
 
     if (response?.Err === "existnick") {
       window.alert("이미 등록된 ID에요");
