@@ -9,7 +9,15 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>GAMECARD.GG</title>
+        
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9902915188733725"
+          crossOrigin="anonymous"
+        />
       </Head>
+
+      
       <Script
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-YBDDHMVVG2%22%3E"
