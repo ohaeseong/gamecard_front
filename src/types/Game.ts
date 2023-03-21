@@ -61,7 +61,7 @@ export interface IMapleInfoResponse {
 export interface IGameProfile {
   age: number;
   bg: number;
-  bg_cover: number;
+  bgCover: number;
   voice: number;
   
   friendType: number[];
