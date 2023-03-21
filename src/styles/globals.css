@@ -4,7 +4,7 @@
 
 html,
 body {
-  @apply font-nanumgothic;
+  @apply font-gyeonggi;
 }
 
 a {
@@ -17,11 +17,11 @@ a {
 }
 
 @font-face {
-  font-family: "Nanum-Gothic-Bold";
-  src: url("../../public/fonts/NanumGothicBold.ttf") format("truetype");
+  font-family: "Gyeonggi-Bold";
+  src: url("../../public/fonts/GyeonggiBold.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "Nanum-Gothic";
-  src: url("../../public/fonts/NanumGothic.ttf") format("truetype");
+  font-family: "Gyeonggi-Regular";
+  src: url("../../public/fonts/GyeonggiRegular.ttf") format("truetype");
 }

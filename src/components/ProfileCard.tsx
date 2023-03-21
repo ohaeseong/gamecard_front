@@ -50,7 +50,7 @@ const ProfileCard: React.FC<Props> = ({
       <div className="flex flex-row items-center">
         <div
           className={classNames(
-            "w-full lg:min-h-[320px] border min-h-[200px] rounded-xl bg-no-repeat bg-center bg-cover flex flex-col justify-end p-3",
+            "w-full lg:min-h-[320px] relative min-h-[200px] rounded-xl bg-no-repeat bg-center bg-cover flex flex-col justify-end p-3",
             className
           )}
           style={{
@@ -74,14 +74,14 @@ const ProfileCard: React.FC<Props> = ({
                       - Lv {profileGame?.level}
                     </span>
                   </div>
-                  <div className="w-40 h-40 relative bg-white rounded flex flex-col justify-between items-center">
+                  <div className="w-40 h-40 bg-white relative rounded flex flex-col justify-between items-center">
                     <span className="mt-2 text-xs">
                       {`${profileGame.world} - ${
                         profileGame.job.split("/")[1]
                       }`}
                     </span>
                     <img
-                      className="bg-contain absolute"
+                      className="bg-contain absolute w-full"
                       src={profileGame.imageUrl}
                       alt="maplestory user image"
                     />
@@ -105,7 +105,7 @@ const ProfileCard: React.FC<Props> = ({
                       {`${profileGame.world} - ${profileGame.job}`}
                     </span>
                     <img
-                      className="bg-contain"
+                      className="bg-contain w-full"
                       src={profileGame.imageUrl}
                       alt="maplestory user image"
                     />
@@ -116,7 +116,7 @@ const ProfileCard: React.FC<Props> = ({
             </>
           )}
         </div>
-        <div className="w-20 h-[90%] rounded-r-xl shadow-xl justify-evenly items-center bg-slate-100 flex flex-col">
+        <div className="w-20 rounded-r-xl shadow-xl justify-evenly h-[90%] items-center bg-slate-100 flex flex-col">
           {games.map((game) => (
             <div
               className="cursor-pointer"

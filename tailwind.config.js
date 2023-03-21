@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        nanumgothic: ["nanumgothic", "sans-serif"],
-        "nanumgothic-bold": ["nanumgothic-bold", "sans-serif"],
+        gyeonggi: ["gyeonggi", "sans-serif"],
+        "gyeonggi-bold": ["gyeonggi-bold", "sans-serif"],
       },
 
       width: {

@@ -15,6 +15,7 @@ export interface IResponseLogin {
   dnf: {};
   id: string;
   Err?: string;
+  tickets: number;
 }
 
 export interface IProfile {

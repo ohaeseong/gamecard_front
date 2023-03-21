@@ -13,7 +13,7 @@ type Props = {
 const DefaultLayout: React.FC<Props> = ({ children, profile }) => {
   const router = useRouter();
   return (
-    <div className="flex flex-col h-screen overflow-auto">
+    <div className="flex flex-col h-screen overflow-auto bg-zinc-900">
       <Header
         className={classNames("", {
           hidden: router.pathname === "/login",

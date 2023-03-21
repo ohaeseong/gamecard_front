@@ -19,8 +19,6 @@ const ProfilePage = ({
   authToken,
   loginedUserId,
 }: Props) => {
-  console.log(userProfile);
-
   return (
     <>
       <HeadMeta />

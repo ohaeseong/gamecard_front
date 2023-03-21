@@ -36,6 +36,7 @@ import { getProfileById } from "@/apis/profile";
 import classNames from "classnames";
 import { deleteCookie } from "@/hooks/cookie";
 import { useRouter } from "next/router";
+import { isBrowser } from "@/utils/browser";
 
 const colorOptions = [
   { label: "검정색", value: "black" },
@@ -84,6 +85,7 @@ const ProfileContainer = ({
   const [cloths, setCloths] = React.useState(maleCloths);
   const [selectedCloth, setSelectedCloth] = React.useState("");
 
+  const [tickets, setTickets] = React.useState(0);
   const [genImageUrl, setGenImageUrl] = React.useState("");
 
   const [wait, setWait] = React.useState<Nullable<number>>();
@@ -113,6 +115,12 @@ const ProfileContainer = ({
       setGallery(_gallery);
     }
   }, [selectedProfileGame]);
+
+  React.useEffect(() => {
+    if (isBrowser()) {
+      setTickets(Number(localStorage.getItem("tickets")));
+    }
+  }, []);
 
   return (
     <DefaultLayout profile={logindUserProfile}>
@@ -144,19 +152,19 @@ const ProfileContainer = ({
             </span>
           </div>
           {loginedUserId === userProfile?.id && authToken && (
-            <div className="flex space-x-2">
-              <div
+            <div className="flex space-x-2 items-center">
+              <button
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
                 onClick={toggleModal}
               >
                 이미지 생성
-              </div>
-              <div
+              </button>
+              <button
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
                 onClick={requestGetAiImageUrl}
               >
                 이미지 받기
-              </div>
+              </button>
             </div>
           )}
         </div>
@@ -224,9 +232,13 @@ const ProfileContainer = ({
                         onClick={handleHairColor}
                       />
                     </div>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-500 mt-4 inline-block">
                       - 원본 캐릭터와 다른 색상을 선택하면 정확도와 인식률이
                       대폭 하락합니다.
+                    </span>
+                    <br />
+                    <span className="text-xs text-slate-500">
+                      - 남은 AI 이미지 생성 티켓 갯수: {tickets}
                     </span>
                     {/* <div className="mt-4">
                       <span className="text-sm">의상 선택 : </span>
@@ -452,9 +464,9 @@ const ProfileContainer = ({
     setEyesColor(color.label);
   }
 
-  function handleCloth(cloth: string) {
-    setSelectedCloth(cloth);
-  }
+  // function handleCloth(cloth: string) {
+  //   setSelectedCloth(cloth);
+  // }
 
   async function requestCreateAiImage() {
     if (!authToken || !userId) {
@@ -497,6 +509,7 @@ const ProfileContainer = ({
     setLoading(true);
 
     const response: IAiImageResponse = await createAiImage(params);
+    // console.log(response);
 
     if (response) {
       setLoading(false);
@@ -522,7 +535,6 @@ const ProfileContainer = ({
       window.alert("잠시 후 시도해주세요!");
       return;
     }
-
     setWait(response.wait);
     toggleModal();
   }
@@ -594,6 +606,13 @@ const ProfileContainer = ({
     setGenImageUrl("");
     toggleGeneratedModal();
     setWait(null);
+
+    const tempTickets = tickets - 1;
+    localStorage.setItem("tickets", tempTickets.toString());
+
+    setTickets((prev) => {
+      return prev--;
+    });
   }
 
   async function requestGetAiImageUrl() {
