@@ -22,7 +22,7 @@ const LoginContainer: React.FC = ({}) => {
         "p-20 rounded w-fit h-fit bg-white flex flex-col items-center justify-center shadow-lg"
       )}
     >
-      <h1 className="mb-8 font-bold text-lg">GAMECARD</h1>
+      <h1 className="mb-8 font-bold text-lg">GAMECARD.GG</h1>
 
       {!regist ? (
         <div className="space-y-3">
@@ -54,12 +54,12 @@ const LoginContainer: React.FC = ({}) => {
 
       <div className="w-full mt-8">
         {!regist ? (
-          <Button className="w-full h-10" onClick={onLogin}>
-            Login
+          <Button className="w-full h-10 bg-black text-white" onClick={onLogin}>
+            로그인
           </Button>
         ) : (
-          <Button className="w-full h-10" onClick={onRegist}>
-            Regist
+          <Button className="w-full h-10 bg-black text-white" onClick={onRegist}>
+            가입하기
           </Button>
         )}
       </div>
@@ -76,7 +76,7 @@ const LoginContainer: React.FC = ({}) => {
             className="text-xs text-slate-400 cursor-pointer"
             onClick={toggleRegist}
           >
-            회원가입 하기
+            간편 가입
           </span>
         ) : (
           <span

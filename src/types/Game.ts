@@ -31,6 +31,7 @@ export interface IMapleStory {
   verified: boolean;
   gameName: ServicedGames;
   gallery: Array<string>;
+  profile: IGameProfile;
 }
 
 export interface ILostArk {
@@ -44,6 +45,7 @@ export interface ILostArk {
   verified: boolean;
   world: string;
   gallery: Array<string>;
+  profile: IGameProfile;
 }
 
 export interface IMapleInfoResponse {
@@ -52,6 +54,22 @@ export interface IMapleInfoResponse {
   name: string;
   state: string;
   world: string;
+  Err?: string;
+  profile: IGameProfile;
+}
+
+export interface IGameProfile {
+  age: number;
+  bg: number;
+  bg_cover: number;
+  voice: number;
+  
+  friendType: number[];
+  playTime: number[];
+  playType: number[];
+
+  lang: string;
+  desc: string;
   Err?: string;
 }
 

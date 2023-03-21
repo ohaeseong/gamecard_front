@@ -22,7 +22,7 @@ const Header: React.FC<Props> = ({ className, profile }) => {
   return (
     <div
       className={classNames(
-        "min-h-[56px] border-b w-full flex flex-row px-4 items-center justify-between",
+        "min-h-[56px] border-b w-full flex flex-row px-4 items-center justify-between bg-black",
         className
       )}
     >
@@ -42,9 +42,9 @@ const Header: React.FC<Props> = ({ className, profile }) => {
       ) : (
         <Link
           href="/login"
-          className="text-sm font-semibold px-3 border py-2 rounded bg-white-500 text-black border-indigo-500 hover:bg-white hover:text-black-500 transition-colors"
+          className="text-sm font-semibold px-3 border py-2 rounded bg-white-500 text-white border-white-500 hover:bg-white hover:text-white transition-colors"
         >
-          LOGIN
+          로그인
         </Link>
       )}
     </div>

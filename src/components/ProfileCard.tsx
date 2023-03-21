@@ -8,6 +8,7 @@ import Modal from "./Modal";
 import { ServicedGames } from "@/types/Game";
 import { Nullable } from "@/utils/utileTypes";
 import Image from "next/image";
+import { isNil } from "lodash";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
@@ -54,12 +55,12 @@ const ProfileCard: React.FC<Props> = ({
             className
           )}
           style={{
-            backgroundImage: getProfileCardBackgroundImage(),
+            backgroundImage: getProfileCardBackgroundImage(profileGame.profile.bg),
           }}
         >
           {games.length === 0 ? (
             <div className="w-full lg:min-h-[320px] min-h-[200px] flex justify-center items-center">
-              <h1 className="text-xl font-semibold text-indigo-300">{`캐릭터를 등록해주세요`}</h1>
+              <h1 className="text-xl font-semibold text-white">{`좌측의 + 버튼으로 캐릭터를 등록해주세요`}</h1>
             </div>
           ) : (
             <>
@@ -243,17 +244,25 @@ const ProfileCard: React.FC<Props> = ({
     }
   }
 
-  function getProfileCardBackgroundImage() {
+  function getProfileCardBackgroundImage(bg: number) {
     if (games.length === 0) {
       return "";
     }
 
     if (selectedProfileGame === "maplestory") {
-      return "url(/images/cover/maple_cover_2.png)";
+      if (isNil(bg)) {
+        return "url(https://g.gamecard.gg/bg/maplestory/default.png)";
+      } else {
+        return `url(https://g.gamecard.gg/bg/maplestory/${bg}.png)`;
+      }
     }
 
     if (selectedProfileGame === "lostark") {
-      return "url(/images/cover/lostark_cover.jpg)";
+      // if (isNil(bg)) {
+        return "url(https://g.gamecard.gg/bg/lostark/default.png)";
+      // } else {
+      //   return `url(https://g.gamecard.gg/bg/lostark/${bg}.png)`;
+      // }
     }
   }
 };
