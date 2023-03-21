@@ -29,7 +29,7 @@ const Header: React.FC<Props> = ({ className, profile }) => {
       <h1 className="text-lg font-bold text-indigo-600">
         <Link href="/">
           <Image
-            className="w-30 h-12 object-contain border rounded cursor-pointer"
+            className="w-30 h-12 object-contain rounded cursor-pointer"
             width={48}
             height={48}
             src={`/images/etc/gamecardgg.png`}

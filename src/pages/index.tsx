@@ -33,7 +33,7 @@ export default function HomePage({ profile }: Props) {
                   href="https://apps.apple.com/us/app/gamecard-gg/id6446257166"
                   target="_blank"
                 >
-                  <button className="py-2 px-3 rounded-lg">
+                  <button className="py-2 rounded-lg">
                     <Image
                       className="object-contain rounded"
                       src="/images/etc/apple.svg"
@@ -47,7 +47,7 @@ export default function HomePage({ profile }: Props) {
                   href="https://play.google.com/store/apps/details?id=gg.gamecard.gamecard"
                   target="_blank"
                 >
-                  <button className="py-2 px-3 rounded-lg">
+                  <button className="py-2 rounded-lg">
                     <Image
                       className="object-contain rounded"
                       src="/images/etc/google_play_store.png"
@@ -57,13 +57,12 @@ export default function HomePage({ profile }: Props) {
                     />
                   </button>
                 </Link>
-                
               </div>
               <button
-                  className="py-1 px-3 ml-2 border rounded-lg bg-black text-white focus:outline-black"
-                  onClick={goToCreateAiImage}
-                >
-                  웹에서 보기
+                className="py-1 px-3 border rounded-lg bg-black text-white focus:outline-black"
+                onClick={goToCreateAiImage}
+              >
+                웹에서 보기
               </button>
             </div>
           </div>
