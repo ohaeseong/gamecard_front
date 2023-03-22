@@ -5,7 +5,7 @@ type Props = {
   theme?: "primary" | "clear";
   disable?: boolean;
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const Button: React.FC<Props> = ({
@@ -17,11 +17,15 @@ const Button: React.FC<Props> = ({
 }) => {
   return (
     <button
-      className={classNames("outline-none w-full h-10 text-white", className, {
-        border: theme === "primary",
-        "bg-slate-400": disable,
-        "bg-indigo-500": !disable,
-      })}
+      className={classNames(
+        "outline-none border-none w-full h-10 text-white",
+        className,
+        {
+          border: theme === "primary",
+          "bg-slate-400": disable,
+          "bg-indigo-600": !disable,
+        }
+      )}
       onClick={onClick}
     >
       {children}

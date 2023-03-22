@@ -37,6 +37,10 @@ import classNames from "classnames";
 import { deleteCookie } from "@/hooks/cookie";
 import { useRouter } from "next/router";
 import { isBrowser } from "@/utils/browser";
+import Image from "next/image";
+import Button from "@/components/Button";
+import Link from "next/link";
+import GameCard from "@/components/GameCard";
 
 const colorOptions = [
   { label: "검정색", value: "black" },
@@ -69,7 +73,6 @@ const ProfileContainer = ({
   loginedUserId,
 }: Props) => {
   const router = useRouter();
-
   const [userProfile, setUserProfile] = React.useState(_userProfile);
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
@@ -124,32 +127,93 @@ const ProfileContainer = ({
 
   return (
     <DefaultLayout profile={logindUserProfile}>
-      <ContentsLayout className="">
-        <ProfileCard
-          games={games}
-          token={authToken}
-          profile={userProfile}
-          selectedProfileGame={selectedProfileGame}
-          handleProfileGame={handleProfileGame}
-          addGameCharacter={addGameCharacter}
-        />
+      <ContentsLayout className="mt-2">
+        {!profileGame ? (
+          <div className="h-64 w-full flex flex-row border-b border-zinc-700">
+            <div className="basis-1/2 h-full flex flex-col text-zinc-400 justify-center">
+              <div className="flex flex-col">
+                <h1 className="text-white text-3xl font-bold">
+                  내 게임 정보를 카드 한장으로!
+                </h1>
+                <span className="text-sm mt-2">
+                  롤, 메이플, 로스트 아크 등등 여러 게임 정보를 한눈에
+                  보여주세요!
+                </span>
+                <span className="text-sm">
+                  내 게임 캐릭터로 그리는 그림까지! 지금 확인해보세요!
+                </span>
+                <Link
+                  className="bg-indigo-600 text-white text-sm mt-2 w-fit px-2 py-1 rounded"
+                  href="/card/edit"
+                >
+                  카드 등록 하기
+                </Link>
+              </div>
+            </div>
+            <div className="basis-1/2 h-full flex justify-center">
+              <Image
+                className="object-contain"
+                src="/images/cover/Gekko_Artwork_Full.png"
+                width={200}
+                height={200}
+                alt="gekko"
+              />
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="w-full flex justify-between">
+              <h1 className="text-xl font-bold text-indigo-400 mt-4">
+                카드 리스트
+              </h1>
+              {game.length < 2 && (
+                <Link
+                  className="bg-indigo-600 text-white text-sm mt-2 w-fit px-2 py-1 rounded"
+                  href="/card/edit"
+                >
+                  카드 등록 하기
+                </Link>
+              )}
+            </div>
+            <div className="w-full p-2 flex flex-row space-x-3 border border-zinc-700 mt-2">
+              {game.map((game) => (
+                <div
+                  key={game.gameName}
+                  onClick={() => handleProfileGame(game.gameName)}
+                >
+                  <GameCard
+                    className="transform hover:-translate-y-4 transition-transform cursor-pointer"
+                    type={game.gameName}
+                    data={game}
+                    selected={game.gameName === selectedProfileGame}
+                    size="w-[300px] h-[420px]"
+                  />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
         <div className="w-full mt-8 flex flex-row justify-between items-center">
           <div className="flex space-x-2 items-center">
-            <span className="text-xl font-bold text-indigo-600">갤러리 - </span>
-            <span className="text-xs font-bold text-indigo-600 relative group">
-              <button
-                className="p-2 py-2 bg-indigo-500 text-white w-full rounded border"
-                onClick={handleDynamicUrl}
-              >
-                Dynamic Url: i.gamecard.gg/{profileGame?.gameName}?id=
-                {userProfile.id}
-              </button>
-
-              <span className="absolute p-2 group-hover:block hidden w-64 top-0 bg-indigo-500 text-white rounded -right-[265px]">
-                해당 URL을 통해 내 갤러리에 저장된 사진 중 하나를 랜덤으로
-                보여줄 수 있습니다.
-              </span>
+            <span className="text-xl font-bold text-indigo-400">
+              갤러리 {selectedProfileGame && <span>-</span>}
             </span>
+            {selectedProfileGame && (
+              <span className="text-xs font-bold text-indigo-500 relative group">
+                <button
+                  className="p-2 py-2 bg-indigo-600 text-white w-full rounded"
+                  onClick={handleDynamicUrl}
+                >
+                  Dynamic Url: i.gamecard.gg/{profileGame?.gameName}?id=
+                  {userProfile.id}
+                </button>
+
+                <span className="absolute p-2 group-hover:block hidden w-64 top-0 bg-indigo-600 text-white rounded -right-[265px]">
+                  해당 URL을 통해 내 갤러리에 저장된 사진 중 하나를 랜덤으로
+                  보여줄 수 있습니다.
+                </span>
+              </span>
+            )}
           </div>
           {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2 items-center">
@@ -184,22 +248,20 @@ const ProfileContainer = ({
           <>
             {
               <div className="flex flex-row justify-between">
-                <div className="w-56 relative flex flex-col items-center">
+                <div className="w-56 relative flex flex-col items-center justify-center">
                   <img
-                    className="object-contain w-56 h-56"
+                    className="object-contain w-56 h-56 mt-1"
                     src={profileGame?.imageUrl}
                     alt="maple_profile_image"
                   />
-                  <span
-                    className={classNames("absolute top-2", {
-                      "text-white": selectedProfileGame === "lostark",
-                    })}
-                  >{`${profileGame?.name} - ${
+                  <span className={classNames("mt-2 text-sm text-white")}>{`${
+                    profileGame?.name
+                  } - ${
                     profileGame?.job?.split("/")[1] || profileGame?.job
                   }`}</span>
                 </div>
                 <div className="py-2 ml-4 flex flex-col items-center">
-                  <div className="flex flex-row justify-center items-center space-x-2">
+                  <div className="flex flex-row justify-center items-center space-x-2 text-white">
                     <span>캐릭터 성별: </span>
                     <label>남성</label>
                     <input
@@ -217,7 +279,7 @@ const ProfileContainer = ({
                     />
                   </div>
                   <div className="mt-4">
-                    <div className="flex flex-row space-x-2 justify-center items-center">
+                    <div className="flex flex-row space-x-2 justify-center items-center text-white">
                       <span className="text-sm">눈동자 색상 선택 :</span>
                       <DropdownMenu
                         className="z-50"
@@ -232,12 +294,12 @@ const ProfileContainer = ({
                         onClick={handleHairColor}
                       />
                     </div>
-                    <span className="text-xs text-slate-500 mt-4 inline-block">
+                    <span className="text-xs text-zinc-400 mt-4 inline-block">
                       - 원본 캐릭터와 다른 색상을 선택하면 정확도와 인식률이
                       대폭 하락합니다.
                     </span>
                     <br />
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-zinc-400">
                       - 남은 AI 이미지 생성 티켓 갯수: {tickets}
                     </span>
                     {/* <div className="mt-4">
@@ -251,7 +313,7 @@ const ProfileContainer = ({
                   </div>
 
                   <button
-                    className="p-2 py-2 bg-indigo-500 mt-14 text-sm text-white w-full rounded"
+                    className="p-2 py-2 bg-indigo-600 mt-14 text-sm text-white w-full rounded"
                     onClick={requestCreateAiImage}
                   >
                     {loading ? "Loading..." : "이미지 생성"}
@@ -341,7 +403,7 @@ const ProfileContainer = ({
       return;
     }
     if (!profileGame || !selectedProfileGame) {
-      window.alert("게임 등록을 먼저 해주세요!");
+      window.alert("카드 등록을 먼저 해주세요!");
       return;
     }
 

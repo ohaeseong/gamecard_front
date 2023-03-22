@@ -46,13 +46,13 @@ const Modal: React.FC<Props> = ({
             >
               <Dialog.Panel
                 className={classNames(
-                  "transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all",
+                  "transform rounded bg-zinc-800 p-6 text-left align-middle shadow-xl transition-all",
                   className
                 )}
               >
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-semibold leading-6 text-indigo-600 mb-2"
+                  className="text-lg font-semibold leading-6 text-indigo-400 mb-2"
                 >
                   <div className="flex-1 flex justify-between">
                     <span>{title}</span>

@@ -22,17 +22,17 @@ const Header: React.FC<Props> = ({ className, profile }) => {
   return (
     <div
       className={classNames(
-        "min-h-[56px] border-b w-full flex flex-row px-4 items-center justify-between bg-black",
+        "min-h-[56px] w-full flex flex-row px-4 items-center justify-between bg-violet-500",
         className
       )}
     >
       <h1 className="text-lg font-bold text-indigo-600">
         <Link href="/">
           <Image
-            className="w-30 h-12 object-contain rounded cursor-pointer"
+            className="w-30 h-8 object-contain rounded cursor-pointer"
             width={48}
-            height={48}
-            src={`/images/etc/gamecardgg.png`}
+            height={40}
+            src={`/images/logos/gamecardgg.png`}
             alt={"title_image"}
           />
         </Link>
@@ -42,7 +42,7 @@ const Header: React.FC<Props> = ({ className, profile }) => {
       ) : (
         <Link
           href="/login"
-          className="text-sm font-semibold px-3 border py-2 rounded bg-white-500 text-white border-white-500 hover:bg-white hover:text-white transition-colors"
+          className="text-sm font-semibold px-3 border py-2 rounded bg-white-500 text-white border-white-500 hover:bg-white hover:text-violet-600 transition-colors"
         >
           로그인
         </Link>

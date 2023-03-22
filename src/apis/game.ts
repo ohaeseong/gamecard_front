@@ -21,18 +21,15 @@ interface IGameInput {
 }
 
 export function requestAddGame(variables: IGameInput) {
-  const response = fetch(
-    ` https://img.gamecard.gg/game`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...variables,
-      }),
-    }
-  )
+  const response = fetch(`https://img.gamecard.gg/game`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...variables,
+    }),
+  })
     .then((response) => response.json())
     .catch((error) => console.log("error:", error));
 

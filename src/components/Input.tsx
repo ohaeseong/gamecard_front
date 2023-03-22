@@ -18,7 +18,9 @@ const Input: React.FC<Props> = ({
   return (
     <div className="flex flex-row justify-around w-full">
       <input
-        className={classNames("outline-none border-b pl-1", className)}
+        className={classNames("outline-none pl-1", className, {
+          "border-b": !className?.includes("border-b"),
+        })}
         onChange={onChange}
         placeholder={placeholder}
         value={value}

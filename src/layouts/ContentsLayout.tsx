@@ -5,10 +5,13 @@ type Props = {
   children: React.ReactNode;
 };
 
-const ContentsLayout: React.FC<Props> = ({ children }) => {
+const ContentsLayout: React.FC<Props> = ({ className, children }) => {
   return (
     <div
-      className={classNames("flex flex-col w-[1080px] h-full p-4 bg-zinc-900")}
+      className={classNames(
+        "flex flex-col w-[1080px] h-full bg-zinc-900",
+        className
+      )}
     >
       {children}
     </div>

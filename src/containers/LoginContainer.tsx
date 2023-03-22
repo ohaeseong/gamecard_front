@@ -19,10 +19,10 @@ const LoginContainer: React.FC = ({}) => {
   return (
     <div
       className={classNames(
-        "p-20 rounded w-fit h-fit bg-white flex flex-col items-center justify-center shadow-lg"
+        "p-20 rounded w-fit h-fit bg-zinc-800 flex flex-col items-center justify-center shadow-lg"
       )}
     >
-      <h1 className="mb-8 font-bold text-lg">GAMECARD.GG</h1>
+      <h1 className="mb-8 font-bold text-xl text-zinc-200">GAMECARD.GG</h1>
 
       {!regist ? (
         <div className="space-y-3">
@@ -52,13 +52,16 @@ const LoginContainer: React.FC = ({}) => {
         </div>
       )}
 
-      <div className="w-full mt-8">
+      <div className="w-full mt-7 mb-1">
         {!regist ? (
           <Button className="w-full h-10 bg-black text-white" onClick={onLogin}>
             로그인
           </Button>
         ) : (
-          <Button className="w-full h-10 bg-black text-white" onClick={onRegist}>
+          <Button
+            className="w-full h-10 bg-black text-white"
+            onClick={onRegist}
+          >
             가입하기
           </Button>
         )}
@@ -66,21 +69,21 @@ const LoginContainer: React.FC = ({}) => {
 
       <div className="w-full flex justify-between mt-3">
         <span
-          className="text-xs text-slate-400 cursor-pointer"
+          className="text-xs text-zinc-400 cursor-pointer"
           onClick={() => router.push("/")}
         >
           홈으로
         </span>
         {!regist ? (
           <span
-            className="text-xs text-slate-400 cursor-pointer"
+            className="text-xs text-zinc-400 cursor-pointer"
             onClick={toggleRegist}
           >
             간편 가입
           </span>
         ) : (
           <span
-            className="text-xs text-slate-400 cursor-pointer"
+            className="text-xs text-zinc-400 cursor-pointer"
             onClick={toggleRegist}
           >
             로그인 하기

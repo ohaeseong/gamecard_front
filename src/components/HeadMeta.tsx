@@ -30,7 +30,7 @@ const HeadMeta = ({ title, description, url, image }: Props) => {
         }
       />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={url || "https://g.gamecard.gg/gamecardgg.png"} />
+      <meta property="og:url" content={url || "https://gamecard.gg"} />
       <meta property="og:image" content={image || ""} />
       <meta property="og:article:author" content="자캐 소장" />
     </Head>

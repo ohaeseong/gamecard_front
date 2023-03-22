@@ -27,15 +27,15 @@ const ImageList: React.FC<Props> = ({
   return (
     <div
       className={classNames(
-        "w-full border rounded lg:p-4 p-1 flex flex-row flex-wrap lg:gap-4 gap-2 justify-center lg:justify-start",
+        "w-full bg-zinc-800 lg:p-4 p-1 flex flex-row flex-wrap lg:gap-4 gap-2 justify-center lg:justify-start",
         className
       )}
     >
       {images.map((image, index) => (
         <div key={index}>
           {!image ? (
-            <label className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer">
-              <AiOutlinePlus />
+            <label className="w-40 h-52 flex items-center border border-zinc-600 justify-center cursor-pointer">
+              <AiOutlinePlus color="#ffffff" />
               {typeof uploadImage === "function" && (
                 <input
                   className="hidden"
@@ -48,7 +48,7 @@ const ImageList: React.FC<Props> = ({
             </label>
           ) : (
             <img
-              className="w-40 h-52 object-contain border rounded cursor-pointer"
+              className="w-40 h-52 object-contain border border-zinc-600 rounded p-2 cursor-pointer"
               key={image}
               src={image}
               alt={"profile_ai_image"}
@@ -60,9 +60,9 @@ const ImageList: React.FC<Props> = ({
       {typeof uploadImage === "function" && images.length < 21 && (
         <label
           htmlFor="thumbnail_update"
-          className="w-40 h-52 border rounded flex items-center justify-center cursor-pointer"
+          className="w-40 h-52 border border-zinc-600 flex items-center justify-center cursor-pointer"
         >
-          <AiOutlinePlus />
+          <AiOutlinePlus color="#ffffff" />
           <input
             className="hidden"
             id="thumbnail_update"
@@ -75,13 +75,13 @@ const ImageList: React.FC<Props> = ({
       )}
       <Modal title="갤러리" isOpen={modal} closeModal={toggleModal}>
         <img
-          className="w-60 h-full object-contain border rounded cursor-pointer"
+          className="w-60 h-full object-contain my-4 rounded cursor-pointer"
           src={selectedImage}
           alt={"image"}
         />
         {typeof _deleteImage === "function" && (
           <Button
-            className="w-20 h-10 mt-4 rounded"
+            className="w-20 h-10 mt-2 rounded"
             onClick={deleteImage(images.indexOf(selectedImage))}
           >
             삭제

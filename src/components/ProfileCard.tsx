@@ -55,7 +55,9 @@ const ProfileCard: React.FC<Props> = ({
             className
           )}
           style={{
-            backgroundImage: getProfileCardBackgroundImage(profileGame.profile.bg),
+            backgroundImage: getProfileCardBackgroundImage(
+              profileGame?.profile?.bg
+            ),
           }}
         >
           {games.length === 0 ? (
@@ -259,7 +261,7 @@ const ProfileCard: React.FC<Props> = ({
 
     if (selectedProfileGame === "lostark") {
       // if (isNil(bg)) {
-        return "url(https://g.gamecard.gg/bg/lostark/default.png)";
+      return "url(https://g.gamecard.gg/bg/lostark/default.png)";
       // } else {
       //   return `url(https://g.gamecard.gg/bg/lostark/${bg}.png)`;
       // }

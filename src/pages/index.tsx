@@ -19,15 +19,16 @@ export default function HomePage({ profile }: Props) {
       <HeadMeta />
       <div className="flex flex-col h-screen justify-center items-center">
         <Header profile={profile} />
-        <div className="w-full h-full flex flex-row bg-slate-50">
+        <div className="w-full h-full flex flex-row bg-zinc-900">
           <div className="h-full w-1/2 flex items-center justify-center flex-col">
-            <div className="ml-40">
+            <div className="ml-40 p-14 rounded bg-zinc-800 flex justify-center flex-col">
               <div className="flex flex-row w-[500px]">
-                <h1 className="text-[50px] leading-[50px] -ml-2 text-black-700">
-                  GAMECARD.GG
+                <h1 className="text-[50px] leading-[50px] -ml-2 text-black-700 text-white">
+                  <span className="text-indigo-600">G</span>AMECARD.
+                  <span className="text-indigo-600">GG</span>
                 </h1>
               </div>
-              <pre className="mt-4 text-slate-00">{`내가 키운 캐릭터,\n한 곳에 등록하고 공유하고 즐기세요.\nGAMECARD.GG에서!\n`}</pre>
+              <pre className="mt-4 text-white">{`내가 키운 캐릭터,\n한 곳에 등록하고 공유하고 즐기세요.\nGAMECARD.GG에서!\n`}</pre>
               <div className="flex flex-row mt-8 space-x-2">
                 <Link
                   href="https://apps.apple.com/us/app/gamecard-gg/id6446257166"
@@ -47,7 +48,7 @@ export default function HomePage({ profile }: Props) {
                   href="https://play.google.com/store/apps/details?id=gg.gamecard.gamecard"
                   target="_blank"
                 >
-                  <button className="py-2 rounded-lg">
+                  <button className="py-2 rounded">
                     <Image
                       className="object-contain rounded"
                       src="/images/etc/google_play_store.png"
@@ -59,7 +60,7 @@ export default function HomePage({ profile }: Props) {
                 </Link>
               </div>
               <button
-                className="py-1 px-3 border rounded-lg bg-black text-white focus:outline-black"
+                className="py-2 px-3 mt-1 rounded bg-indigo-600 text-white focus:outline-black"
                 onClick={goToCreateAiImage}
               >
                 웹에서 보기

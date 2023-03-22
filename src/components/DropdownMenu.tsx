@@ -37,7 +37,7 @@ const DropdownMenu: React.FC<Props> = ({
       className={classNames("relative inline-block text-left", className)}
     >
       <div>
-        <Menu.Button className="inline-flex w-full capitalize justify-center rounded-md bg-indigo-500 hover:bg-opacity-90 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="inline-flex w-full capitalize justify-center rounded-md bg-indigo-600 hover:bg-opacity-90 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           {!selected ? "옵션" : selected}
         </Menu.Button>
       </div>
@@ -50,11 +50,11 @@ const DropdownMenu: React.FC<Props> = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute h-60 overflow-auto left-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute h-60 overflow-auto left-0 mt-2 w-56 origin-top-right divide-y divide-zinc-500 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           {menus.map((menu, index) => (
             <Menu.Item key={menu.label + index}>
               <div
-                className={classNames("cursor-pointer p-2")}
+                className={classNames("cursor-pointer p-2 bg-zinc-700")}
                 onClick={onClick(menu)}
               >
                 {menu.label}
