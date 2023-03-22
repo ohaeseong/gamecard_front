@@ -11,6 +11,7 @@ import Input from "@/components/Input";
 import GameCard from "@/components/GameCard";
 import { ILostArk, IMapleStory } from "@/types/Game";
 import Link from "next/link";
+import CardEditTimeLine from "@/components/CardEditTimeLine";
 
 type Props = {
   userProfile: IProfile;
@@ -23,11 +24,16 @@ const CardEditContainer: React.FC<Props> = ({
   authToken,
   userId,
 }: Props) => {
+  const cardEditTimelines = ["내 계정 확인", "내 정보 등록", "카드 확인"];
   const router = useRouter();
 
   const [selectedGame, setSelectedGame] = React.useState("");
   const [character, setCharacter] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+
+  const [currentEditTimeLine, setCurrentEditTimeLine] = React.useState(
+    cardEditTimelines[1]
+  );
 
   const [cardInfo, setCardInfo] = React.useState<
     IMapleStory | ILostArk | null
@@ -76,7 +82,7 @@ const CardEditContainer: React.FC<Props> = ({
             </div>
           </div>
 
-          {selectedGame && (
+          {/* {selectedGame && !cardInfo && (
             <div className="mt-8">
               <h1 className="text-indigo-400 text-xl mb-2 font-bold">
                 캐릭터 검색
@@ -96,7 +102,7 @@ const CardEditContainer: React.FC<Props> = ({
                 </button>
               </div>
             </div>
-          )}
+          )} */}
 
           {loading && (
             <div className="w-full justify-center items-center flex mt-20">
@@ -104,19 +110,59 @@ const CardEditContainer: React.FC<Props> = ({
             </div>
           )}
 
-          {cardInfo && (
-            <div className="mt-8 flex flex-row justify-around items-center">
-              <GameCard type={selectedGame} data={cardInfo} />
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="text-2xl text-white font-bold">등록 완료!</h1>
+          {/* {cardInfo && ( */}
+          <div className="mt-4 flex flex-row justify-around items-center">
+            <div className="flex flex-col items-center bg-zinc-800 w-full mr-4 rounded h-full">
+              <div className="w-full h-12 bg-zinc-900 bg-opacity-70 rounded-t">
+                <CardEditTimeLine
+                  timelines={cardEditTimelines}
+                  currentTimeLine={currentEditTimeLine}
+                />
+              </div>
+
+              <div className="w-full h-full p-8">
+                <h1 className="text-xl text-indigo-400 font-bold pb-4 border-b border-zinc-700">
+                  내 소개
+                </h1>
+                <div className="text-sm font-bold text-white mt-4">
+                  내 기본 정보
+                </div>
+                <span className="text-zinc-400 text-sm mt-6 font-bold inline-block">
+                  내 나이
+                </span>
+                <div className="flex flex-row space-x-2">
+                  <div className="flex flex-row">
+                    <input
+                      className="bg-zinc-600"
+                      type="radio"
+                      // onChange={handleAiGender}
+                      value=""
+                      // checked={aiGender === "girl"}
+                    />
+                    <span className="text-white text-xs ml-2">미성년</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col bg-zinc-800 px-10 min-h-[580px] rounded">
+              <span className="text-lg mb-8 mt-8 pb-5 text-white my-1 border-b border-zinc-700 w-full text-center">
+                미리보기
+              </span>
+              {/* <GameCard
+                  size="min-w-[300px] h-[420px]"
+                  type={selectedGame}
+                  data={cardInfo}
+                /> */}
+              <div className="min-w-[300px] h-[420px]"></div>
+            </div>
+            {/* <h1 className="text-2xl text-white font-bold">등록 완료!</h1>
                 <Link href={`/profile/${userId}`}>
                   <span className="text-lg font-bold mt-3 inline-block text-indigo-400">
                     프로필 페이지로 이동하기
                   </span>
-                </Link>
-              </div>
-            </div>
-          )}
+                </Link> */}
+          </div>
+          {/* )} */}
         </div>
       </ContentsLayout>
     </DefaultLayout>
@@ -160,6 +206,7 @@ const CardEditContainer: React.FC<Props> = ({
       }
 
       setCardInfo(response);
+      setCurrentEditTimeLine(cardEditTimelines[1]);
     }
   }
 };

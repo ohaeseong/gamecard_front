@@ -168,7 +168,7 @@ const ProfileContainer = ({
               </h1>
               {game.length < 2 && (
                 <Link
-                  className="bg-indigo-600 text-white text-sm mt-2 w-fit px-2 py-1 rounded"
+                  className="bg-indigo-600 text-white text-sm mt-2 flex items-center w-fit px-2 py-1 rounded"
                   href="/card/edit"
                 >
                   카드 등록 하기

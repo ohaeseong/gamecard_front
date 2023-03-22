@@ -16,7 +16,7 @@ const GameCard: React.FC<Props> = ({
   type,
   data,
   selected,
-  size = "w-[360px] h-[480px]",
+  size = "min-w-[360px] min-h-[480px]",
 }) => {
   return (
     <div

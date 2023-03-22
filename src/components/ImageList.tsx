@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import classNames from "classnames";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Button from "./Button";
 import Modal from "./Modal";
