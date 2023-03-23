@@ -16,7 +16,6 @@ import {
 } from "@/apis/image";
 import ImageList from "@/components/ImageList";
 import { IListItem } from "@/components/List";
-import ProfileCard from "@/components/ProfileCard";
 import ContentsLayout from "@/layouts/ContentsLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { IProfile } from "@/types/Account";
@@ -29,8 +28,7 @@ import {
   maleClothMap,
 } from "@/types/Image";
 import DropdownMenu from "@/components/DropdownMenu";
-import { IMapleInfoResponse, ServicedGames } from "@/types/Game";
-import { getMapleInfo, requestAddGame } from "@/apis/game";
+import { ServicedGames } from "@/types/Game";
 import { Nullable } from "@/utils/utileTypes";
 import { getProfileById } from "@/apis/profile";
 import classNames from "classnames";
@@ -38,7 +36,6 @@ import { deleteCookie } from "@/hooks/cookie";
 import { useRouter } from "next/router";
 import { isBrowser } from "@/utils/browser";
 import Image from "next/image";
-import Button from "@/components/Button";
 import Link from "next/link";
 import GameCard from "@/components/GameCard";
 
@@ -77,6 +74,7 @@ const ProfileContainer = ({
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
   const maleCloths = Object.keys(maleClothMap);
+  console.log(_userProfile);
 
   const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
@@ -93,10 +91,10 @@ const ProfileContainer = ({
 
   const [wait, setWait] = React.useState<Nullable<number>>();
 
-  const game = games.filter((game) => game.level);
+  const registeredGames = games.filter((game) => Object.keys(game).length > 5);
 
   const [selectedProfileGame, setSelectedProfileGame] = React.useState(
-    game[0]?.gameName || ""
+    registeredGames[0]?.gameName || ""
   );
 
   const profileGame = games.filter(
@@ -111,9 +109,9 @@ const ProfileContainer = ({
 
   React.useEffect(() => {
     if (selectedProfileGame) {
-      const _gallery = games.filter(
-        (game) => game.gameName === selectedProfileGame
-      )[0]?.gallery;
+      const _gallery =
+        games.filter((game) => game.gameName === selectedProfileGame)[0]
+          ?.gallery || [];
 
       setGallery(_gallery);
     }
@@ -166,7 +164,7 @@ const ProfileContainer = ({
               <h1 className="text-xl font-bold text-indigo-400 mt-4">
                 카드 리스트
               </h1>
-              {game.length < 2 && (
+              {registeredGames.length < 4 && (
                 <Link
                   className="bg-indigo-600 text-white text-sm mt-2 flex items-center w-fit px-2 py-1 rounded"
                   href="/card/edit"
@@ -175,8 +173,8 @@ const ProfileContainer = ({
                 </Link>
               )}
             </div>
-            <div className="w-full p-2 flex flex-row space-x-3 border border-zinc-700 mt-2">
-              {game.map((game) => (
+            <div className="w-full p-2 flex flex-row space-x-3 border border-zinc-700 mt-2 overflow-x-auto">
+              {registeredGames.map((game) => (
                 <div
                   key={game.gameName}
                   onClick={() => handleProfileGame(game.gameName)}
@@ -724,37 +722,37 @@ const ProfileContainer = ({
     }
   }
 
-  async function addGameCharacter(
-    profile: IProfile,
-    seletedGame: string,
-    gameUserName: string,
-    token: string
-  ) {
-    if (!userId || !token) return;
-    const response = await requestAddGame({
-      id: profile.id,
-      gameName: seletedGame,
-      gameUser: gameUserName,
-      authToken: token,
-    });
+  // async function addGameCharacter(
+  //   profile: IProfile,
+  //   seletedGame: string,
+  //   gameUserName: string,
+  //   token: string
+  // ) {
+  //   if (!userId || !token) return;
+  //   const response = await requestAddGame({
+  //     id: profile.id,
+  //     gameName: seletedGame,
+  //     gameUser: gameUserName,
+  //     authToken: token,
+  //   });
 
-    if (response?.Err === "InvalidAccess") {
-      window.alert("다시 로그인 해주세요.");
+  //   if (response?.Err === "InvalidAccess") {
+  //     window.alert("다시 로그인 해주세요.");
 
-      deleteCookie("userId");
-      deleteCookie("authToken");
-      router.reload();
-      return;
-    }
+  //     deleteCookie("userId");
+  //     deleteCookie("authToken");
+  //     router.reload();
+  //     return;
+  //   }
 
-    const newUserProfile: IProfile = await getProfileById({
-      id: userId,
-    });
+  //   const newUserProfile: IProfile = await getProfileById({
+  //     id: userId,
+  //   });
 
-    setUserProfile(newUserProfile);
+  //   setUserProfile(newUserProfile);
 
-    return response;
-  }
+  //   return response;
+  // }
 };
 
 export default ProfileContainer;

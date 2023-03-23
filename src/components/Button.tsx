@@ -18,15 +18,15 @@ const Button: React.FC<Props> = ({
   return (
     <button
       className={classNames(
-        "outline-none border-none w-full h-10 text-white",
+        "outline-none border-none w-full h-10 rounded text-white",
         className,
         {
           border: theme === "primary",
-          "bg-slate-400": disable,
+          "bg-zinc-700 opacity-80 cursor-default": disable,
           "bg-indigo-600": !disable,
         }
       )}
-      onClick={onClick}
+      onClick={!disable ? onClick : () => {}}
     >
       {children}
     </button>

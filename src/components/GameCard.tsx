@@ -87,9 +87,9 @@ const GameCard: React.FC<Props> = ({
             </div>
             <div className="h-80 flex justify-center items-center px-4 flex-col">
               <img
-                className="w-64 h-64 my-2 rounded"
+                className={classNames("w-64 h-64 my-2 rounded")}
                 src={data.imageUrl}
-                alt="maple_image"
+                alt="lostark_image"
               />
               <div className="flex w-full justify-between">
                 <span className="font-bold text-white text-lg">
@@ -111,6 +111,10 @@ const GameCard: React.FC<Props> = ({
             <div className="h-[86px]"></div>
           </>
         )}
+
+        {type === "valorant" && <>{"Valorant"}</>}
+
+        {type === "lol" && <>{"Lol"}</>}
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ const ImageList: React.FC<Props> = ({
           )}
         </div>
       ))}
-      {typeof uploadImage === "function" && images.length < 21 && (
+      {typeof uploadImage === "function" && images.length === 21 ? (
         <label
           htmlFor="thumbnail_update"
           className="w-40 h-52 border border-zinc-600 flex items-center justify-center cursor-pointer"
@@ -72,6 +72,10 @@ const ImageList: React.FC<Props> = ({
             accept="image/gif, image/jpeg, image/jpg, image/png"
           />
         </label>
+      ) : (
+        <div className="text-white h-[200px] flex justify-center items-center w-full">
+          사진첩 기능 준비 중
+        </div>
       )}
       <Modal title="갤러리" isOpen={modal} closeModal={toggleModal}>
         <img

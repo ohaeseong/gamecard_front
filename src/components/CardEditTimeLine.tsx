@@ -18,7 +18,7 @@ const CardEditTimeLine: React.FC<Props> = ({
         className
       )}
     >
-      <ul className="relative flex items-start justify-between mt-2">
+      <ul className="relative flex items-start justify-between mt-2 pb-2">
         {timelines.map((timeline) => (
           <li
             key={timeline}
@@ -41,14 +41,8 @@ const CardEditTimeLine: React.FC<Props> = ({
                 <span
                   className={classNames(
                     "text-h2 group-hover:text-gray-000 font-bold capitalize"
-                    // {
-                    //   "text-gray-000": isSameGroup,
-                    //   "text-darkpurple-400": !isSameGroup,
-                    // }
                   )}
-                >
-                  {/* {t.name} */}
-                </span>
+                ></span>
                 <span className="text-sm text-white text-center">
                   {timeline}
                 </span>
