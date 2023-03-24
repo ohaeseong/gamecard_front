@@ -24,8 +24,7 @@ export default function HomePage({ profile }: Props) {
             <div className="ml-40 p-14 rounded bg-zinc-800 flex justify-center flex-col">
               <div className="flex flex-row w-[500px]">
                 <h1 className="text-[50px] leading-[50px] -ml-2 text-black-700 text-white">
-                  <span className="text-indigo-600">G</span>AMECARD.
-                  <span className="text-indigo-600">GG</span>
+                  GAMECARD.GG
                 </h1>
               </div>
               <pre className="mt-4 text-white">{`내가 키운 캐릭터,\n한 곳에 등록하고 공유하고 즐기세요.\nGAMECARD.GG에서!\n`}</pre>
@@ -59,15 +58,18 @@ export default function HomePage({ profile }: Props) {
                   </button>
                 </Link>
               </div>
+            <div className="w-[550px]">
               <button
-                className="py-2 px-3 mt-1 rounded bg-indigo-600 text-white focus:outline-black"
+                className="py-2 px-9 rounded bg-indigo-600 text-white focus:outline-black"
                 onClick={goToCreateAiImage}
               >
                 웹에서 보기
               </button>
+              </div>
+
             </div>
           </div>
-          <div className="h-full w-1/2 flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <div className="w-[550px] h-[600px] bg-black rounded-xl relative">
               {/* <div className="w-[320px] h-[200px] absolute -left-[70px] top-[365px] shadow-2xl rounded-xl bg-white" /> */}
               {/* <div
@@ -77,7 +79,7 @@ export default function HomePage({ profile }: Props) {
                 }}
               /> */}
 
-              <div className="w-[280px] flex flex-col h-[500px] bg-black shadow-2xl absolute right-16 top-20 rounded-xl bg-cover bg-right justify-center items-center">
+              <div className="flex flex-col bg-black shadow-2xl right-16 top-20 left-16 rounded-xl bg-cover bg-right justify-center items-center">
                 <Image
                   className="object-contain rounded"
                   src="/images/etc/002.png"
