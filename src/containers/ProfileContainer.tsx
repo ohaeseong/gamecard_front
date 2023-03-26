@@ -74,7 +74,6 @@ const ProfileContainer = ({
   const games = getGameAbilityFromProfile<IListItem>(userProfile.games);
   const femaleCloths = Object.keys(femaleClothMap);
   const maleCloths = Object.keys(maleClothMap);
-  console.log(_userProfile);
 
   const [loading, setLoading] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
@@ -164,27 +163,28 @@ const ProfileContainer = ({
               <h1 className="text-xl font-bold text-indigo-400 mt-4">
                 카드 리스트
               </h1>
-              {registeredGames.length < 4 && (
-                <Link
-                  className="bg-indigo-600 text-white text-sm mt-2 flex items-center w-fit px-2 py-1 rounded"
-                  href="/card/edit"
-                >
-                  카드 등록 하기
-                </Link>
-              )}
+              <Link
+                className="bg-indigo-600 text-white text-sm mt-2 flex items-center w-fit px-2 py-1 rounded"
+                href="/card/edit"
+              >
+                카드 등록 하기
+              </Link>
             </div>
-            <div className="w-full p-2 flex flex-row space-x-3 border border-zinc-700 mt-2 overflow-x-auto">
+            <div className="w-full p-4 flex flex-row space-x-3 border border-zinc-700 mt-2 overflow-x-auto">
               {registeredGames.map((game) => (
                 <div
+                  className={classNames("", {
+                    "min-w-[584px]": registeredGames.length > 1,
+                  })}
                   key={game.gameName}
                   onClick={() => handleProfileGame(game.gameName)}
                 >
                   <GameCard
-                    className="transform hover:-translate-y-4 transition-transform cursor-pointer"
+                    className="transform transition-transform cursor-pointer"
                     type={game.gameName}
                     data={game}
                     selected={game.gameName === selectedProfileGame}
-                    size="w-[300px] h-[420px]"
+                    size="w-[320px] h-[480px]"
                   />
                 </div>
               ))}

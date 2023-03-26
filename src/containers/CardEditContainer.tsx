@@ -114,7 +114,7 @@ const CardEditContainer: React.FC<Props> = ({
                 />
               </div>
 
-              <div className="h-fit flex flex-row items-center space-x-3">
+              {/* <div className="h-fit flex flex-row items-center space-x-3">
                 <Image
                   className="rounded"
                   src="/images/symbols/valorant_icon.png"
@@ -150,7 +150,7 @@ const CardEditContainer: React.FC<Props> = ({
                   onChange={handleSelectedGame}
                   checked={selectedGame === "lol"}
                 />
-              </div>
+              </div> */}
             </div>
           )}
 
@@ -668,19 +668,14 @@ const CardEditContainer: React.FC<Props> = ({
 
     if (response) {
       setLoading(false);
-      if (response?.Err === "24시간 이내에 다시 등록할 수 없습니다") {
-        window.alert("24시간 이내에 다시 등록할 수 없습니다");
-        return;
-      }
-
-      if (response?.Err === "ErrError: InvalidUserName") {
-        window.alert("캐릭터를 찾지 못했습니다.");
-        return;
-      }
 
       if (response?.Err === `Err'${character}' 태그를 입력해주세요.`) {
         window.alert("태그를 입력해주세요.");
         return;
+      }
+
+      if (typeof response?.games === "object") {
+        router.push(`/profile/${userId}`);
       }
     }
   }
