@@ -184,6 +184,8 @@ const ProfileContainer = ({
                     type={game.gameName}
                     data={game}
                     selected={game.gameName === selectedProfileGame}
+                    mapleBgIndex={game.profile.bg}
+                    showProfileInfo={game.profile.setup}
                     size="w-[320px] h-[480px]"
                   />
                 </div>

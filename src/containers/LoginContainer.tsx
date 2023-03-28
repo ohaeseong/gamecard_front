@@ -119,8 +119,20 @@ const LoginContainer: React.FC = ({}) => {
   }
 
   async function onRegist() {
-    if (!id || !pw || !comfirmPw) {
-      window.alert("양식을 확인해 주세요");
+    const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+
+    if (!id || !pw) {
+      window.alert("아이디 혹은 비밀번호를 작성 해주세요.");
+      return;
+    }
+
+    if (pw.length < 4) {
+      window.alert("비밀번호는 4글자 이상으로 작성 해주세요");
+      return;
+    }
+
+    if (!regex.test(id)) {
+      window.alert("아이디에 특수문자는 사용할 수 없어요");
       return;
     }
 

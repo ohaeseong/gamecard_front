@@ -73,6 +73,7 @@ export interface IGameProfile {
   lang: ProfileLang;
   desc: string; // 걍 입력받는거
   Err?: string;
+  setup?: boolean;
 }
 
 // 국가
@@ -135,4 +136,17 @@ export enum ServicedGames {
   LOL = "lol",
   MapleStory = "maplestory",
   LostArk = "lostark",
+}
+
+export enum MapleCards {
+  TYPE_0 = "엘리니아",
+  TYPE_1 = "엘린 숲",
+  TYPE_2 = "여왕의 성",
+  TYPE_3 = "저주받은 신전",
+  TYPE_4 = "페리온",
+  TYPE_5 = "헤네시스",
+  TYPE_6 = "아브락사스 유적",
+  TYPE_7 = "메이플 아일랜드",
+  TYPE_8 = "리스 항구",
+  TYPE_9 = "커닝 시팅",
 }

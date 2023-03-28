@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import {
   ILostArk,
   IMapleStory,
+  MapleCards,
   ProfileAge,
   ProfileFriendType,
   ProfileGender,
@@ -61,6 +62,7 @@ const CardEditContainer: React.FC<Props> = ({
   const [age, setAge] = React.useState<number>();
   const [gender, setGender] = React.useState<number>();
   const [voice, setVoice] = React.useState<number>();
+  const [bg, setBg] = React.useState<number>();
   const [playTime, setPlayTime] = React.useState<number[]>([]);
   const [playType, setPlayType] = React.useState<number[]>([]);
   const [friendType, setFriendType] = React.useState<number[]>([]);
@@ -181,13 +183,13 @@ const CardEditContainer: React.FC<Props> = ({
                             : "소환사 닉네임 검색"}{" "}
                           검색
                         </span>
-                        {(selectedGame === "maplestory" ||
+                        {/* {(selectedGame === "maplestory" ||
                           selectedGame === "lostark") && (
                           <span className="text-xs text-zinc-400 inline-block mt-1 mb-4">
                             *한번 캐릭터를 등록하게 되면 24이내로 다시 등록할 수
                             없습니다.
                           </span>
-                        )}
+                        )} */}
                         <div className="mt-2">
                           <input
                             className="h-fit px-2 focus:outline-none py-1.5 w-fit mr-2 text-white rounded font-normal bg-zinc-700 border-b-0"
@@ -236,11 +238,11 @@ const CardEditContainer: React.FC<Props> = ({
                       내 소개
                     </h1>
 
-                    <div className=" font-bold text-white mt-4">
+                    <div className="font-bold text-white mt-4">
                       내 기본 정보
                     </div>
 
-                    <div className="mb-10 flex flex-row">
+                    <div className="flex flex-row">
                       <div>
                         <div>
                           <span className="text-zinc-400 text-sm mt-6 font-bold inline-block">
@@ -359,7 +361,7 @@ const CardEditContainer: React.FC<Props> = ({
                                         })
                                       }
                                     />
-                                    <span className="text-white text-sm ml-2">
+                                    <span className="text-white text-sm ml-2 min-w-fit">
                                       {getPlayTimeLabel(playTimeOption)}
                                     </span>
                                   </div>
@@ -400,7 +402,7 @@ const CardEditContainer: React.FC<Props> = ({
                                         })
                                       }
                                     />
-                                    <span className="text-white text-sm ml-2">
+                                    <span className="text-white text-sm ml-2 min-w-fit">
                                       {getPlayTypeLabel(
                                         playTypeOption,
                                         selectedGame
@@ -443,7 +445,7 @@ const CardEditContainer: React.FC<Props> = ({
                                           })
                                         }
                                       />
-                                      <span className="text-white text-sm ml-2">
+                                      <span className="text-white text-sm ml-2 min-w-fit">
                                         {getFriendTypeLabel(
                                           friendTypeOption,
                                           selectedGame
@@ -459,7 +461,40 @@ const CardEditContainer: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    <div className="w-full flex justify-center">
+                    {selectedGame === "maplestory" && (
+                      <div>
+                        <div>
+                          <span className="text-zinc-400 text-sm mt-6 font-bold inline-block">
+                            카드 배경 이미지 선택
+                          </span>
+                          <div className="flex flex-row space-x-2">
+                            <div className="flex flex-row flex-wrap mt-2 space-x-4 justify-evenly gap-y-4">
+                              {Object.values(MapleCards).map(
+                                (cardBg, index) => (
+                                  <div
+                                    key={cardBg}
+                                    className="flex items-center"
+                                  >
+                                    <input
+                                      className="bg-zinc-600"
+                                      type="radio"
+                                      onChange={() => setBg(index)}
+                                      value=""
+                                      checked={bg === index}
+                                    />
+                                    <span className="text-white text-sm ml-2 min-w-fit">
+                                      {cardBg}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="w-full flex justify-center mt-10">
                       <div className="space-x-2 w-[400px] flex justify-center">
                         <Button
                           className="px-4 py-2"
@@ -494,13 +529,13 @@ const CardEditContainer: React.FC<Props> = ({
                     <div className="mt-4 w-full h-[410px] flex items-center justify-between flex-col pb-6">
                       <div className="text-lg font-bold text-white mt-28 flex flex-col justify-center items-center">
                         <span>짧은 소개글 작성</span>
-                        {(selectedGame === "maplestory" ||
+                        {/* {(selectedGame === "maplestory" ||
                           selectedGame === "lostark") && (
                           <span className="text-xs text-zinc-400 inline-block mt-1 mb-4">
                             *한번 캐릭터를 등록하게 되면 24이내로 다시 등록할 수
                             없습니다.
                           </span>
-                        )}
+                        )} */}
                         <div className="mt-8">
                           <input
                             className="h-fit px-2 focus:outline-none py-1.5 mr-2 text-white rounded font-normal bg-zinc-700 border-b-0 w-[500px]"
@@ -539,6 +574,7 @@ const CardEditContainer: React.FC<Props> = ({
                     <GameCard
                       type={selectedGame}
                       data={cardInfo}
+                      mapleBgIndex={bg}
                       size="w-[290px] h-[410px]"
                     />
                   )}
@@ -659,12 +695,13 @@ const CardEditContainer: React.FC<Props> = ({
         voice,
         playTime,
         playType,
-        bg: 0,
-        bgCover: 0,
+        bg,
+        bgCover: bg,
         desc: intro,
         lang: ProfileLang.KO,
       },
     });
+    console.log(response);
 
     if (response) {
       setLoading(false);
