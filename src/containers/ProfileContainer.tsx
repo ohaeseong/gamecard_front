@@ -215,7 +215,7 @@ const ProfileContainer = ({
               </span>
             )}
           </div>
-          {loginedUserId === userProfile?.id && authToken && (
+          {/* {loginedUserId === userProfile?.id && authToken && (
             <div className="flex space-x-2 items-center">
               <button
                 className="border border-indigo-600 text-sm px-3 py-2 hover:text-indigo-600 hover:bg-white transition-colors cursor-pointer bg-indigo-600 text-white rounded"
@@ -230,7 +230,7 @@ const ProfileContainer = ({
                 이미지 받기
               </button>
             </div>
-          )}
+          )} */}
         </div>
         <ImageList
           className="mt-4"
